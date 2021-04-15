@@ -312,6 +312,18 @@ export default {
         121.032578,
         31.060097
       ];
+           let markerq = new AMap.Marker({
+            icon: require("../../assets/image/qw.png"),
+            position: [ 120.991449,31.05981],
+            offset: new AMap.Pixel(-40, -45)
+        });
+        markerq.setMap(this.MyMip);
+         let markerz = new AMap.Marker({
+            icon: require("../../assets/image/dx.png"),
+            position: [121.032578,31.060097],
+            offset: new AMap.Pixel(-40, -40)
+        });
+        markerz.setMap(this.MyMip);
       let wdata = this.separateArr(mypath, 2);
       let poyline = new AMap.Polyline({
         path: wdata,

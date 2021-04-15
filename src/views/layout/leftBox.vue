@@ -255,6 +255,8 @@ export default {
       display:flex;
       .font-size(20);
       .margin(20,0,0,0);
+      box-sizing:border-box;
+      .padding(8,0,8,0);
       color:#ffffff;
         align-items: center;
         background:RGBA(15, 38, 79, 0.8);
@@ -266,6 +268,7 @@ export default {
       }
        .tab-tit3{
         flex:1;
+        
       }
 
     }
