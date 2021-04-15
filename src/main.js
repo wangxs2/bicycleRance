@@ -7,6 +7,9 @@ import './permission' //路由判断
 import Vant from 'vant';
 import 'vant/lib/index.css';
 import common from './libs/common.js' //自定义包
+import dataV from '@jiaminghi/data-view'
+
+Vue.use(dataV)
 Vue.use(common)
 Vue.use(Vant);
 Vue.config.productionTip = false

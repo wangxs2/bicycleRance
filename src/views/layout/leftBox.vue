@@ -1,46 +1,44 @@
 <template>
   <div class="left-container">
     <div class="time-box">
-      <div>累计用时</div>
-      <div>
-        <!-- {{myHours}}:{{myMinutes}}:{{mySeconds}} -->
-        <timexs :sendSync="true" :autoStart="true" :defaultVal="0"></timexs>
-      </div>
+      <img src="../../assets/image/sz.png" alt srcset />
+      <timexs :sendSync="true" :autoStart="true" :defaultVal="0"></timexs>
     </div>
-    <div class="weather-box">
+    <!-- <div class="weather-box">
       <div class="water-iteam">
         <img :src="require(`../../assets/weatherIcon/${$store.getters.weatherobj.weather}.png`)" />
         <div>{{$store.getters.weatherobj.temperature}}°</div>
         <div class="mony-font">
           <div>风力：{{$store.getters.weatherobj.windPower}}</div>
           <div>湿度：{{$store.getters.weatherobj.humidity}}</div>
-          <!-- <div>气压：{{$store.getters.weatherobj.windPower}}</div> -->
         </div>
       </div>
-      <!-- <div class="water-iteam water-iteam1">
-        <div>AQI</div>
-        <div class="yx">33 优</div>
-      </div> -->
-    </div>
+    
+    </div>-->
     <div class="gd-box">
-      <div class="tit">当前排名</div>
-      <div class="swiper-box">
+      <div class="tit">
+        <div class="titl">当前排名</div>
+        <div class="titlin"></div>
+      </div>
+      <!-- <div class="swiper-box">
         <div class="swiper-container">
           <div class="swiper-wrapper">
-            <div class="swiper-slide" v-for="(itam,index) in $store.getters.rankingData" :key="index">
+            <div
+              class="swiper-slide"
+              v-for="(itam,index) in $store.getters.rankingData"
+              :key="index"
+            >
               <div class="itampaiming" v-for="(irm,ind) in itam" :key="ind">
                 <div class="indexnum">NO.{{ind+index*10+1}}</div>
                 <div class="indexname">
                   <div>{{irm.userName}}</div>
                   <div>{{irm.speed}}km/h</div>
                 </div>
-                
               </div>
-              
             </div>
           </div>
         </div>
-      </div>
+      </div>-->
     </div>
   </div>
 </template>
@@ -56,54 +54,59 @@ export default {
   data() {
     return {
       mySwiper: null,
-         currentTime:0,
-          timeObj: null, // 时间对象,下方会用到
-          myHours: '00', // 我定义来接收计算出来的 小时 的
-          myMinutes: '00', // 我定义来接收计算出来的 分钟 的
-          mySeconds: '00'// 我定义来接收计算出来的 秒钟 的
+      currentTime: 0,
+      timeObj: null, // 时间对象,下方会用到
+      myHours: "00", // 我定义来接收计算出来的 小时 的
+      myMinutes: "00", // 我定义来接收计算出来的 分钟 的
+      mySeconds: "00" // 我定义来接收计算出来的 秒钟 的
     };
   },
-  watch:{
-    
-  },
+  watch: {},
   created() {
     // this.testTimer()
   },
   mounted() {
     this.mySwiper = new Swiper(".swiper-container", {
-        autoplay: {
-          delay: 5000,
-          stopOnLastSlide: false,
-          disableOnInteraction: true
-        },
-        // mousewheel: true,
-        loop: true, // 循环模式选项
-        observer: true, // 修改swiper自己或子元素时，自动初始化swiper
-        observeParents: true // 修改swiper的父元素时，自动初始化swiper
+      autoplay: {
+        delay: 5000,
+        stopOnLastSlide: false,
+        disableOnInteraction: true
+      },
+      // mousewheel: true,
+      loop: true, // 循环模式选项
+      observer: true, // 修改swiper自己或子元素时，自动初始化swiper
+      observeParents: true // 修改swiper的父元素时，自动初始化swiper
     });
     /* 鼠标滑过pagination控制swiper切换*/
   },
   methods: {
-    testTimer(){
-    this.timeFunction();
-    setInterval(() => {
+    testTimer() {
       this.timeFunction();
-    }, 1000)
-  },
-  timeFunction(){
-    // 开始执行倒计时
-    this.timeObj = { // 时间对象
-      seconds: Math.floor(this.currentTime % 60),
-      minutes: Math.floor(this.currentTime / 60) % 60,
-      hours: Math.floor(this.currentTime / 60 / 60) % 24
+      setInterval(() => {
+        this.timeFunction();
+      }, 1000);
+    },
+    timeFunction() {
+      // 开始执行倒计时
+      this.timeObj = {
+        // 时间对象
+        seconds: Math.floor(this.currentTime % 60),
+        minutes: Math.floor(this.currentTime / 60) % 60,
+        hours: Math.floor(this.currentTime / 60 / 60) % 24
+      };
+      // 计算出时分秒
+      this.myHours =
+        this.timeObj.hours < 10 ? "0" + this.timeObj.hours : this.timeObj.hours;
+      this.myMinutes =
+        this.timeObj.minutes < 10
+          ? "0" + this.timeObj.minutes
+          : this.timeObj.minutes;
+      this.mySeconds =
+        this.timeObj.seconds < 10
+          ? "0" + this.timeObj.seconds
+          : this.timeObj.seconds;
+      this.currentTime++;
     }
-    // 计算出时分秒
-    this.myHours = this.timeObj.hours<10?'0'+this.timeObj.hours:this.timeObj.hours;
-    this.myMinutes = this.timeObj.minutes<10?'0'+this.timeObj.minutes:this.timeObj.minutes;
-    this.mySeconds = this.timeObj.seconds<10?'0'+this.timeObj.seconds:this.timeObj.seconds;
-    this.currentTime++;
-  }
-     
   }
 };
 </script>
@@ -116,17 +119,23 @@ export default {
   flex-direction: column;
   box-sizing: border-box;
   .padding(0, 20, 0, 20);
-  background: #071528;
   border-radius: 8px;
   .time-box {
     display: flex;
-    .padding(0, 80, 0, 80);
     justify-content: space-between;
     align-items: center;
-    width: 100%;
-    .vh(80);
-    .font-size(28);
+    .vw(440);
+    .vh(150);
+    .font-size(72);
     color: #ffffff;
+    background: url("../../assets/image/k1@3x.png");
+    background-size: 100% 100%;
+    font-family: DS-Digital;
+    font-weight: bold;
+    .padding(0, 50, 0, 50);
+    // img {
+    //   .margin(0, 35, 0, 0);
+    // }
   }
   .weather-box {
     width: 100%;
@@ -156,16 +165,28 @@ export default {
     }
   }
   .gd-box {
-    flex: 1;
-    width: 100%;
+    .vw(440);
+    .vh(774);
     display: flex;
     flex-direction: column;
+    background: url("../../assets/image/k.png");
+    background-size: 100% 100%;
     .margin(16, 0, 0, 0);
     .tit {
       width: 100%;
-      .vh(40);
-      .font-size(28);
+      .font-size(24);
       color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      .margin(36,0,0,0);
+      .titlin {
+        .vw(30);
+        .vh(4);
+        background: #fff;
+        .margin(8,0,0,0);
+      }
     }
     .swiper-box {
       flex: 1;
@@ -177,31 +198,30 @@ export default {
         width: 100%;
         height: 100%;
         color: #ffffff;
-        .swiper-slide{
+        .swiper-slide {
           display: flex;
           flex-direction: column;
         }
       }
-      .itampaiming{
+      .itampaiming {
         display: flex;
         flex: 1;
         justify-content: flex-start;
         align-items: center;
         width: 100%;
-        background: #232434;
         box-sizing: border-box;
-        .padding(0,12,0,0);
+        .padding(0, 12, 0, 0);
         border-radius: 4px;
         .font-size(24);
-        .margin(8,0,0,0);
-        .indexnum{
+        .margin(8, 0, 0, 0);
+        .indexnum {
           .vw(120);
           color: rgb(32, 192, 254);
           text-align: left;
           box-sizing: border-box;
-          .padding(0,0,0,10);
+          .padding(0, 0, 0, 10);
         }
-        .indexname{
+        .indexname {
           display: flex;
           flex: 1;
           .font-size(22);

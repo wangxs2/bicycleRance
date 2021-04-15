@@ -87,9 +87,9 @@ export default {
       var leave2 = leave1 % (3600 * 1000); //计算小时数后剩余的毫秒数
       var leave3 = leave2 % (60 * 1000); //计算分钟数后剩余的毫秒数
       vm.day = Math.floor(num / (24 * 3600 * 1000)); //计算相差天数
-      vm.hour = Math.floor(leave1 / (3600 * 1000)); //计算相差小时
-      vm.minute = Math.floor(leave2 / (60 * 1000)); //计算相差分钟
-      vm.second = Math.round(leave3 / 1000); //计算相差秒
+      vm.hour = Math.floor(leave1 / (3600 * 1000))<10?'0'+Math.floor(leave1 / (3600 * 1000)):Math.floor(leave1 / (3600 * 1000)); //计算相差小时
+      vm.minute = Math.floor(leave2 / (60 * 1000))<10?'0'+Math.floor(leave2 / (60 * 1000)):Math.floor(leave2 / (60 * 1000)); //计算相差分钟
+      vm.second = Math.round(leave3 / 1000)<10?'0'+Math.round(leave3 / 1000):Math.round(leave3 / 1000); //计算相差秒
     //   if (vm.day > 0) {
     //     vm.countString = `${vm.day}天 ${vm.hour}小时 ${vm.minute}分 ${vm.second}秒`;
     //   } else if (vm.hour > 0) {
@@ -99,7 +99,7 @@ export default {
     //   } else {
     //     vm.countString = `${vm.second}秒`;
     //   }
-      vm.countString =`${vm.hour} : ${vm.minute} : ${vm.second}`;
+      vm.countString =`${vm.hour}:${vm.minute}:${vm.second}`;
     },
     startCountFn: function() {
       var vm = this;
