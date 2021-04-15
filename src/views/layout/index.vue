@@ -30,6 +30,8 @@ export default {
       PolylineGroup: new AMap.OverlayGroup(), // 参赛群组的路径
       num: 0,
       testData: [],
+      heatmap:null,
+      heatmapData:[],
       query: {
         page: 1,
         pageSize: 15,
@@ -77,7 +79,8 @@ export default {
             new AMap.LngLat(iteam.lng, iteam.lat)
           ); //实时更新自行车的位置
           // setTimeout(() => {
-
+            this.heatmapData=this.cloneObj(objme.content)
+            this.heatmap.setDataSet({data:this.heatmapData,max:100});
           this.allpolyPath[index].push(new AMap.LngLat(iteam.lng, iteam.lat));
           this.allpolyine[index].setPath(this.allpolyPath[index]);
           iteam.rankNumber = this.allpolyine[index].getLength();
@@ -106,6 +109,9 @@ export default {
         center: [121.003735, 31.021249],
         mapStyle: "amap://styles/90097c1f0b3d113e3a7d76ab05cbc420"
       });
+       if (!this.isSupportCanvas()) {
+          alert('热力图仅对支持canvas的浏览器适用,您所使用的浏览器不能使用热力图功能,请换个浏览器试试~')
+      }
       this.MyMip.add(this.carGroup);
       this.MyMip.add(this.PolylineGroup);
       let mypath = [
@@ -316,7 +322,7 @@ export default {
         outlineColor: "yellow",
         borderWeight: 9,
         lineJoin: "round",
-        outlineColor: "#0368c6",
+        outlineColor: "#FF0ABBC5",
         isOutline: true
       });
       AMap.plugin("AMap.Weather", () => {
@@ -325,6 +331,32 @@ export default {
           this.$store.commit("SET_WEATER", data);
         });
       });
+
+        this.MyMip.plugin(["AMap.HeatMap"],  ()=> {
+            //初始化heatmap对象
+            this.heatmap = new AMap.HeatMap(this.MyMip, {
+                radius: 5, //给定半径
+                opacity: [0, 0.8]
+                /*,
+                gradient:{
+                    0.5: 'blue',
+                    0.65: 'rgb(117,211,248)',
+                    0.7: 'rgb(0, 255, 0)',
+                    0.9: '#ffea00',
+                    1.0: 'red'
+                }
+                */
+            });
+            //设置数据集：该数据为北京部分“公园”数据
+            // this.heatmap.setDataSet({
+            //     data: this.heatmapData,
+            //     max: 100
+            // });
+        });
+    },
+    isSupportCanvas() {
+        var elem = document.createElement('canvas');
+        return !!(elem.getContext && elem.getContext('2d'));
     },
     setMarker(row) {
       let marker = new AMap.Marker({
@@ -350,8 +382,11 @@ export default {
             this.allpoint.push(this.setMarker(iteam));
             this.allpolyine.push(this.setPolyline());
             this.allpolyPath.push(arpoly);
+            iteam.count=1;
             iteam.rankNumber = 0;
           });
+          this.heatmapData=this.cloneObj(res.content)
+            this.heatmap.setDataSet({data:this.heatmapData,max:100});
           let arrw = this.separateArr(res.content, 10);
           this.$store.commit("SET_RANK", arrw);
           this.carGroup.addOverlays(this.allpoint);
@@ -442,6 +477,14 @@ export default {
     .left(0);
     .top(74);
     .padding(35,0,30,22);
+    z-index: 10;
+  }
+  .right-box{
+      position: absolute;
+    .vw(480);
+    height: 100%;
+    .right(0);
+    .top(74);
     z-index: 10;
   }
 }

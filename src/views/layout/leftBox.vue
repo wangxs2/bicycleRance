@@ -20,7 +20,12 @@
         <div class="titl">当前排名</div>
         <div class="titlin"></div>
       </div>
-      <!-- <div class="swiper-box">
+      <div class="tab-tit">
+        <div class="tab-tit1">姓名</div>
+        <div class="tab-tit2">设备号</div>
+        <div class="tab-tit3">速度<br>km/h</div>
+      </div>
+      <div class="lb-box">
         <div class="swiper-container">
           <div class="swiper-wrapper">
             <div
@@ -29,16 +34,19 @@
               :key="index"
             >
               <div class="itampaiming" v-for="(irm,ind) in itam" :key="ind">
-                <div class="indexnum">NO.{{ind+index*10+1}}</div>
                 <div class="indexname">
-                  <div>{{irm.userName}}</div>
-                  <div>{{irm.speed}}km/h</div>
+                  <div :class="(ind+index*10+1)==1?'numberimg1':(ind+index*10+1)==2?'numberimg2':(ind+index*10+1)==3?'numberimg3':''"> {{(ind+index*10+1)==1?'':(ind+index*10+1)==2?'':(ind+index*10+1)==3?'':(ind+index*10+1)}}</div>
+                  <div class="nawe">{{irm.userName}}</div>
                 </div>
+                <div class="indexnum">{{irm.name}}</div>
+                <div class="indexnum">{{irm.speed}}km/h</div>
               </div>
             </div>
           </div>
         </div>
-      </div>-->
+        
+      </div>
+     
     </div>
   </div>
 </template>
@@ -56,9 +64,7 @@ export default {
       mySwiper: null,
       currentTime: 0,
       timeObj: null, // 时间对象,下方会用到
-      myHours: "00", // 我定义来接收计算出来的 小时 的
-      myMinutes: "00", // 我定义来接收计算出来的 分钟 的
-      mySeconds: "00" // 我定义来接收计算出来的 秒钟 的
+     
     };
   },
   watch: {},
@@ -73,6 +79,7 @@ export default {
         disableOnInteraction: true
       },
       // mousewheel: true,
+      direction : 'vertical',
       loop: true, // 循环模式选项
       observer: true, // 修改swiper自己或子元素时，自动初始化swiper
       observeParents: true // 修改swiper的父元素时，自动初始化swiper
@@ -172,6 +179,8 @@ export default {
     background: url("../../assets/image/k.png");
     background-size: 100% 100%;
     .margin(16, 0, 0, 0);
+    box-sizing:border-box;
+    .padding(0,20,20,20);
     .tit {
       width: 100%;
       .font-size(24);
@@ -185,50 +194,91 @@ export default {
         .vw(30);
         .vh(4);
         background: #fff;
-        .margin(8,0,0,0);
+        .margin(10,0,0,0);
       }
     }
-    .swiper-box {
-      flex: 1;
-    }
-    .swiper-container {
-      height: 100%;
-      width: 100%;
-      .swiper-wrapper {
-        width: 100%;
-        height: 100%;
-        color: #ffffff;
-        .swiper-slide {
-          display: flex;
-          flex-direction: column;
+    .lb-box{
+      flex:1;
+      .swiper-container{
+        width:100%;
+        height:100%;
+        overflow:hidden;
+        // .swiper-wrapper{
+        //    width:100%;
+        // height:100%;
+        // }
+        .swiper-slide{
+          width:100%;
+          height:100%;
+          .itampaiming{
+            width:100%;
+            .vh(60);
+            display:flex;
+            justify-content:space-around;
+             .font-size(20);
+             color:#ffffff;
+             background:RGBA(2, 23, 63, 0.6);
+               align-items: center;
+             border-bottom:1.5px solid RGBA(45, 65, 97,0.3);
+             .numberimg1{
+               .vw(30);
+                .vh(30);
+                background: url("../../assets/image/TOP1@3x.png");
+                background-size: 100% 100%;
+             }
+              .numberimg2{
+               .vw(30);
+                .vh(30);
+                background: url("../../assets/image/TOP2@3x.png");
+                background-size: 100% 100%;
+             }
+              .numberimg3{
+               .vw(30);
+                .vh(30);
+                background: url("../../assets/image/TOP3@3x.png");
+                background-size: 100% 100%;
+             }
+            .indexname{
+              display:flex;
+               align-items: center;
+              .nawe{
+                .margin(0,0,0,6)
+              }
+            }
+          }
         }
       }
-      .itampaiming {
-        display: flex;
-        flex: 1;
-        justify-content: flex-start;
+    }
+    .tab-tit{
+      width:100%;
+      .vh(54);
+      display:flex;
+      .font-size(20);
+      .margin(20,0,0,0);
+      color:#ffffff;
         align-items: center;
-        width: 100%;
-        box-sizing: border-box;
-        .padding(0, 12, 0, 0);
-        border-radius: 4px;
-        .font-size(24);
-        .margin(8, 0, 0, 0);
-        .indexnum {
-          .vw(120);
-          color: rgb(32, 192, 254);
-          text-align: left;
-          box-sizing: border-box;
-          .padding(0, 0, 0, 10);
-        }
-        .indexname {
-          display: flex;
-          flex: 1;
-          .font-size(22);
-          justify-content: space-between;
-        }
+        background:RGBA(15, 38, 79, 0.8);
+      .tab-tit1{
+        .vw(180);
       }
+      .tab-tit2{
+        flex:1;
+      }
+       .tab-tit3{
+        flex:1;
+      }
+
     }
   }
 }
+</style>
+<style lang="less">
+ .lb-box{
+   .header-item{
+     .font-size(20);
+   }
+   .ceil{
+     .font-size(20);
+   }
+ }
 </style>
