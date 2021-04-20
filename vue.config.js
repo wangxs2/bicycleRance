@@ -6,7 +6,7 @@ module.exports = {
   publicPath: "./",
   // baseUrl: process.env_NODE_ENV == 'production' ? '/vehiclerepair/' : '', // 部署项目路径
   devServer: {
-    public: '192.168.1.104',
+    public: '192.168.1.106',
     port: '7852', // 端口号
     // host: '10.1.',
     open: false, // 配置自动启动浏览器

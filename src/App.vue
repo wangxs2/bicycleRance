@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-      <router-view />
+    <router-view />
   </div>
 </template>
 
@@ -13,11 +13,12 @@ export default {
 </script>
 
 <style lang="less">
-
-html,body,#app {
+html,
+body,
+#app {
   width: 100%;
   height: 100%;
-  font-family:"黑体", Avenir, Helvetica, Arial, sans-serif;
+  font-family: '黑体', Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
