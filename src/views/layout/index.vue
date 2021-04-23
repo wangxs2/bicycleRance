@@ -4,20 +4,25 @@
     <div class="left-box">
       <leftbox></leftbox>
     </div>
-    <div class="right-box">
-      <rightbox></rightbox>
+    <div class="right-t-box">
+      <righttbox></righttbox>
+    </div>
+    <div class="right-b-box">
+      <rightbbox></rightbbox>
     </div>
   </div>
 </template>
 
 <script>
 import leftbox from "./leftBox.vue";
-import rightbox from "./rightBox.vue";
+import righttbox from "./rightTBox.vue";
+import rightbbox from "./rightBBox.vue";
 import linePath from './linePath'
 export default {
   components: {
     leftbox,
-    rightbox
+    righttbox,
+    rightbbox
   },
   data () {
     return {
@@ -38,7 +43,8 @@ export default {
         pageSize: 15,
         imei: ""
       },
-      websock: null
+      websock: null,
+      timerSocket: null,
     };
   },
   created () {
@@ -50,18 +56,22 @@ export default {
     this.initmap();
     if (sessionStorage.getItem("isReload")) {
       console.log("页面被刷新");
-
-
+      clearInterval(this.timerSocket);
       this.websock.close(); //离开路由之后断开websocket连接
-
-      this.initWebSocket();
+      // this.websock.onclose = e => {
+      // console.log("断开连接", e);
+      // if (e.currentTarget.readyState === 3) {
+      //   console.log(1111111)
+      //   this.initWebSocket();
+      // }
+      // };
     } else {
       console.log("首次被加载");
       sessionStorage.setItem("isReload", true)
     }
   },
   destroyed () {
-    // this.websock.close(); //离开路由之后断开websocket连接
+    this.websock.close(); //离开路由之后断开websocket连接
   },
   methods: {
     countDown () {
@@ -74,18 +84,25 @@ export default {
     countTime () { },
     initWebSocket () {
       //初始化weosocket
-      const wsuri = "ws://10.1.30.202:8080/cycling/realtime/socket";
+      const wsuri = "ws://101.231.47.116:50000/cycling/realtime/socket";
+      // const wsuri = "ws://192.168.1.102:8080/cycling/realtime/socket"; 
+      // const wsuri = "ws://10.1.30.202:50000/cycling/realtime/socket";
       this.websock = new WebSocket(wsuri);
 
       this.websock.onopen = event => {
         console.log("数据已经链接", event);
-        //  this.websock.send()
+        let that = this
+        let curIndex = 0
+        this.timerSocket = setInterval(() => {
+          curIndex++
+          that.websock.send('cycling' + curIndex)
+        }, 1000);
       };
       this.websock.onmessage = res => {
         console.log("接收数据");
 
         let objme = JSON.parse(res.data);
-        console.log(objme);
+
         objme.content.forEach((iteam, index) => {
           this.allpoint[index].setPosition(
             new AMap.LngLat(iteam.lng, iteam.lat)
@@ -93,8 +110,9 @@ export default {
           // setTimeout(() => {
           this.heatmapData = this.cloneObj(objme.content)
           this.heatmap.setDataSet({ data: this.heatmapData, max: 100 });
+          console.log(this.allpolyPath, '8888888888888888')
           this.allpolyPath[index].push(new AMap.LngLat(iteam.lng, iteam.lat));
-          this.allpolyine[index].setPath(this.allpolyPath[index]);
+          // this.allpolyine[index].setPath(this.allpolyPath[index]);
           iteam.rankNumber = this.allpolyine[index].getLength();
 
           // }, 5000);
@@ -107,11 +125,20 @@ export default {
         //  }, 5000);
       };
       this.websock.onerror = e => {
-        console.log("链接失败");
-        console.log(e);
+        console.log("链接失败", e);
       };
       this.websock.onclose = e => {
+        let that = this
+
+        clearInterval(this.timerSocket);
         console.log("断开连接", e);
+        this.websock.close(); //离开路由之后断开websocket连接
+        if (e.currentTarget.readyState === 3) {
+          this.initWebSocket();
+        }
+        // setTimeout(() => {
+        //   that.initWebSocket();
+        // }, 1000)
       };
     },
     initmap () {
@@ -306,12 +333,21 @@ export default {
     .padding(35,0,30,22);
     z-index: 10;
   }
-  .right-box {
+  .right-t-box {
     position: absolute;
     .vw(480);
-    height: 100%;
+    // height: 100%;
     .right(0);
     .top(74);
+    z-index: 10;
+  }
+
+  .right-b-box {
+    position: absolute;
+    .vw(480);
+    // height: 100%;
+    .right(0);
+    .bottom(-60);
     z-index: 10;
   }
 }
