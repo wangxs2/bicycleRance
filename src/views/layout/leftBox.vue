@@ -33,33 +33,33 @@
               v-for="(itam, index) in $store.getters.rankingData"
               :key="index"
             >
-              <div class="itampaiming" v-for="(irm, ind) in itam" :key="ind">
+              <div class="itampaiming">
                 <div class="indexname">
                   <div
                     :class="
-                      ind + index * 10 + 1 == 1
+                      index + 1 == 1
                         ? 'numberimg1'
-                        : ind + index * 10 + 1 == 2
+                        : index + 1 == 2
                         ? 'numberimg2'
-                        : ind + index * 10 + 1 == 3
+                        : index + 1 == 3
                         ? 'numberimg3'
                         : ''
                     "
                   >
                     {{
-                      ind + index * 10 + 1 == 1
+                      index + 1 == 1
                         ? ''
-                        : ind + index * 10 + 1 == 2
+                        : index + 1 == 2
                         ? ''
-                        : ind + index * 10 + 1 == 3
+                        : index + 1 == 3
                         ? ''
-                        : ind + index * 10 + 1
+                        : index + 1
                     }}
                   </div>
-                  <div class="nawe">{{ irm.userName }}</div>
+                  <div class="nawe">{{ itam.userName }}</div>
                 </div>
-                <div class="indexnum">{{ irm.name }}</div>
-                <div class="indexnum">{{ irm.speed }}km/h</div>
+                <div class="indexnum">{{ itam.name }}</div>
+                <div class="indexnum">{{ itam.speed }}km/h</div>
               </div>
             </div>
           </div>
@@ -85,7 +85,34 @@ export default {
 
     };
   },
-  watch: {},
+  watch: {
+    '$store.getters.rankingData': {
+      handler: function (newVal, oldVal) {
+        // TO DO
+        if (this.mySwiper) {
+          this.mySwiper.destroy();
+        }
+        // console.log("newVal:", newVal);
+        // newVal.forEach(item => {
+        //   console.log(item.userName + ' ' + item.rankNumber)
+        // })
+        this.mySwiper = new Swiper(".swiper-container", {
+          // autoplay: {
+          //   delay: 5000,
+          //   stopOnLastSlide: false,
+          //   disableOnInteraction: true
+          // },
+          // mousewheel: true,
+          direction: 'vertical',
+          // loop: true, // 循环模式选项
+          observer: true, // 修改swiper自己或子元素时，自动初始化swiper
+          observeParents: true // 修改swiper的父元素时，自动初始化swiper
+        });
+      },
+      deep: true,
+      immediate: true
+    },
+  },
   created () {
     // this.testTimer()
   },
@@ -231,7 +258,7 @@ export default {
         // }
         .swiper-slide {
           width: 100%;
-          height: 100%;
+          .vh(60) !important;
           .itampaiming {
             width: 100%;
             .vh(60);

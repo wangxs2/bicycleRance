@@ -30,9 +30,11 @@ export default {
       passedPolyline: null,
       timer: null, //d定时掉接口
       allpoint: [],
+      allpoint1: [],
       allpolyine: [],
       allpolyPath: [],
       carGroup: new AMap.OverlayGroup(), // 参赛群组
+      carGroup1: new AMap.OverlayGroup(), // 参赛群组
       PolylineGroup: new AMap.OverlayGroup(), // 参赛群组的路径
       num: 0,
       testData: [],
@@ -45,11 +47,15 @@ export default {
       },
       websock: null,
       timerSocket: null,
+
+      curMarkerList: [],
+      linePathList: [],
+      curDataList: []
+
     };
   },
   created () {
-    this.getAllData();
-    this.initWebSocket();
+    this.getImeis()
   },
 
   mounted () {
@@ -57,72 +63,133 @@ export default {
     if (sessionStorage.getItem("isReload")) {
       console.log("页面被刷新");
       clearInterval(this.timerSocket);
-      this.websock.close(); //离开路由之后断开websocket连接
-      // this.websock.onclose = e => {
-      // console.log("断开连接", e);
-      // if (e.currentTarget.readyState === 3) {
-      //   console.log(1111111)
-      //   this.initWebSocket();
-      // }
-      // };
+      if (this.websock) {
+        this.websock.close(); //离开路由之后断开websocket连接
+      }
     } else {
       console.log("首次被加载");
       sessionStorage.setItem("isReload", true)
     }
+
+    let mypath = linePath.linePath
+    this.linePathList = this.separateArr(mypath, 2);
+    this.curDataList = []
+    this.linePathList.forEach(item => {
+      let obj = {
+        lng: item[0],
+        lat: item[1],
+        count: 0
+      }
+      this.curDataList.push(obj)
+    })
+
   },
   destroyed () {
     this.websock.close(); //离开路由之后断开websocket连接
   },
   methods: {
-    countDown () {
-      this.timer = setTimeout(() => {
-        this.getPath();
-        clearTimeout(this.timer);
-        return this.countDown();
-      }, 5000);
+    getImeis () {
+      let arpoly = [];
+      this.$fetchGet('/cycling/user/getImeis').then(res => {
+        res.content.forEach((items, indexs) => {
+          items.curMarkerObj = {}
+          items.curMarkerData = []
+          items.count = 0;
+          items.rankNumber = 0;
+          this.allpoint.push(this.setMarker(items));
+          // 计算点位是否在当前路线点200米之内
+          this.curDataList.forEach((item, index) => {
+            this.allpoint1.push(this.setMarker(item));
+            var p1 = this.allpoint1[index].getPosition();
+            var p2 = this.allpoint[indexs].getPosition();
+            var textPos = p1.divideBy(2).add(p2.divideBy(2));
+            var distance = Math.round(p1.distance(p2));
+            if (distance <= 200) {
+              item.count = item.count + 1
+              this.$set(this.curDataList, 'count', items.count + 1)
+            }
+          })
+        })
+        this.heatmapData = this.cloneObj(this.curDataList)
+        this.heatmap.setDataSet({ data: this.heatmapData, max: 100 });
+        let arrw = res.content.slice(0, 10)
+        this.$store.commit("SET_RANK", arrw);
+        this.carGroup.addOverlays(this.allpoint);
+        this.carGroup1.addOverlays(this.allpoint1);
+        this.initWebSocket();
+      })
     },
     countTime () { },
     initWebSocket () {
       //初始化weosocket
-      const wsuri = "ws://101.231.47.116:50000/cycling/realtime/socket";
-      // const wsuri = "ws://192.168.1.102:8080/cycling/realtime/socket"; 
-      // const wsuri = "ws://10.1.30.202:50000/cycling/realtime/socket";
-      this.websock = new WebSocket(wsuri);
+      // const wsuri = "ws://101.231.47.116:50000/cycling/realtime/socket";
+      // const wsuri = "ws://192.168.1.106:8080/cycling/realtime/socket";
+      // const wsuri = "ws://192.168.1.104:8080/cycling/realtime/socket";
 
+      const wsuri = "ws://10.1.30.202:50000/cycling/realtime/socket";
+      this.websock = new WebSocket(wsuri);
       this.websock.onopen = event => {
         console.log("数据已经链接", event);
         let that = this
-        let curIndex = 0
         this.timerSocket = setInterval(() => {
-          curIndex++
-          that.websock.send('cycling' + curIndex)
+          this.allpoint.forEach(item => {
+            that.websock.send('cycling_' + item.getExtData().imei)
+          })
         }, 1000);
+
       };
       this.websock.onmessage = res => {
         console.log("接收数据");
-
+        this.curMarkerAllData = []
+        this.curDataList = []
+        this.curMarkerList = []
+        this.$store.commit("SET_RANK", []);
         let objme = JSON.parse(res.data);
-
         objme.content.forEach((iteam, index) => {
-          this.allpoint[index].setPosition(
-            new AMap.LngLat(iteam.lng, iteam.lat)
-          ); //实时更新自行车的位置
-          // setTimeout(() => {
-          this.heatmapData = this.cloneObj(objme.content)
-          this.heatmap.setDataSet({ data: this.heatmapData, max: 100 });
-          console.log(this.allpolyPath, '8888888888888888')
-          this.allpolyPath[index].push(new AMap.LngLat(iteam.lng, iteam.lat));
-          // this.allpolyine[index].setPath(this.allpolyPath[index]);
-          iteam.rankNumber = this.allpolyine[index].getLength();
-
-          // }, 5000);
+          if (iteam.id == 1202 || iteam.id == 1203) {
+            console.log(iteam.id, iteam.lng, iteam.lat, '777777777777')
+          }
+          this.allpoint.forEach((item, indexs) => {
+            if (iteam.imei == item.getExtData().imei) {
+              item.lng = iteam.lng
+              item.lat = iteam.lat
+              this.allpoint[indexs].setPosition(
+                new AMap.LngLat(iteam.lng, iteam.lat)
+              ); //实时更新自行车的位置
+              item.getExtData().curMarkerObj = iteam
+              item.getExtData().curMarkerData.push([iteam.lng, iteam.lat])
+              item.getExtData().curMarkerObj.rankNumber = AMap.GeometryUtil.distanceOfLine(item.getExtData().curMarkerData);
+            }
+          })
         });
-        // setTimeout(() => {
-        let arr = this.cloneObj(objme.content).sort(
+
+        this.allpoint.forEach(item => {
+          if (item.getExtData().curMarkerObj) {
+            this.curMarkerAllData.push(item.getExtData().curMarkerObj)
+          }
+          // // 计算点位是否在当前路线点200米之内
+          // this.curDataList.forEach((item, index) => {
+          //   this.allpoint1.push(this.setMarker(item));
+          //   var p1 = this.allpoint1[index].getPosition();
+          //   var p2 = this.allpoint[indexs].getPosition();
+          //   var textPos = p1.divideBy(2).add(p2.divideBy(2));
+          //   var distance = Math.round(p1.distance(p2));
+          //   if (distance <= 200) {
+          //     item.count = item.count + 1
+          //     this.$set(this.curDataList, 'count', items.count + 1)
+          //   }
+          // })
+        })
+
+        this.curMarkerList = this.curMarkerAllData
+        // this.curMarkerList.forEach(item => {
+        //   // console.log(item.userName, item.rankNumber)
+        // })
+        let arr = this.curMarkerList.sort(
           this.createComprisonFunction("rankNumber")
         );
-        this.$store.commit("SET_RANK", this.separateArr(arr, 10));
-        //  }, 5000);
+        this.$store.commit("SET_RANK", arr.slice(0, 10));
+
       };
       this.websock.onerror = e => {
         console.log("链接失败", e);
@@ -136,9 +203,6 @@ export default {
         if (e.currentTarget.readyState === 3) {
           this.initWebSocket();
         }
-        // setTimeout(() => {
-        //   that.initWebSocket();
-        // }, 1000)
       };
     },
     initmap () {
@@ -189,23 +253,16 @@ export default {
       this.MyMip.plugin(["AMap.HeatMap"], () => {
         //初始化heatmap对象
         this.heatmap = new AMap.HeatMap(this.MyMip, {
-          radius: 5, //给定半径
-          opacity: [0, 0.8]
-          /*,
-          gradient:{
-              0.5: 'blue',
-              0.65: 'rgb(117,211,248)',
-              0.7: 'rgb(0, 255, 0)',
-              0.9: '#ffea00',
-              1.0: 'red'
+          radius: 50, //给定半径
+          opacity: [0, 0.8],          //热力图的透明度,分别对应heatmap.js的minOpacity和maxOpacity
+          gradient: {          //热力图的颜色渐变区间。   {JSON}:key 插值的位置, 0-1;  value颜色值 
+            0.5: 'blue',
+            0.65: 'rgb(117,211,248)',
+            0.7: 'rgb(0, 255, 0)',
+            0.9: '#ffea00',
+            1.0: 'red'
           }
-          */
         });
-        //设置数据集：该数据为北京部分“公园”数据
-        // this.heatmap.setDataSet({
-        //     data: this.heatmapData,
-        //     max: 100
-        // });
       });
     },
     isSupportCanvas () {
@@ -216,7 +273,8 @@ export default {
       let marker = new AMap.Marker({
         position: [row.lng, row.lat],
         icon: require("./car.png"),
-        offset: new AMap.Pixel(-17, -16)
+        offset: new AMap.Pixel(-17, -16),
+        extData: row
       });
       return marker;
     },
@@ -228,61 +286,16 @@ export default {
       });
       return passedPolyline;
     },
-    getAllData () {
-      let arpoly = [];
-      this.$fetchGet("/cycling/user/getPositions")
-        .then(res => {
-          res.content.forEach((iteam, index) => {
-            this.allpoint.push(this.setMarker(iteam));
-            this.allpolyine.push(this.setPolyline());
-            this.allpolyPath.push(arpoly);
-            iteam.count = 1;
-            iteam.rankNumber = 0;
-          });
-          this.heatmapData = this.cloneObj(res.content)
-          this.heatmap.setDataSet({ data: this.heatmapData, max: 100 });
-          let arrw = this.separateArr(res.content, 10);
-          this.$store.commit("SET_RANK", arrw);
-          this.carGroup.addOverlays(this.allpoint);
-          this.PolylineGroup.addOverlays(this.allpolyine);
-          // this.MyMip.setCenter([res.content[0].lng,res.content[0].lat])
-        })
-        .catch(er => { });
-    },
-
-    //接受路径的
-    getPath () {
-      console.log("一次");
-      this.$fetchGet("/cycling/user/getPositions")
-        .then(res => {
-          res.content.forEach((iteam, index) => {
-            this.allpoint[index].setPosition(
-              new AMap.LngLat(iteam.lng, iteam.lat)
-            );
-            // this.allpolyPath[index].push(new AMap.LngLat(iteam.lng, iteam.lat));
-            // this.allpolyine[index].setPath(this.allpolyPath[index]);
-            // iteam.rankNumber = this.allpolyine[index].getLength();
-          });
-          // let arr = this.cloneObj(res.content).sort(
-          //   this.createComprisonFunction("rankNumber")
-          // );
-          // this.$store.commit("SET_RANK", this.separateArr(arr, 10));
-        })
-        .catch(er => { });
-    },
     //数组的排序
     createComprisonFunction (propertyName) {
-      return function (object1, object2) {
-        var value1 = object1[propertyName];
-        var value2 = object2[propertyName];
-
-        if (value1 < value2) {
-          return -1;
-        } else if (value1 > value2) {
-          return 1;
-        } else {
-          return 0;
-        }
+      return function (a, b) {
+        var value1 = a[propertyName];
+        var value2 = b[propertyName];
+        /*
+        * value2 - value1; ——> 降序
+        * value1 - value2; ——> 升序
+        */
+        return value2 - value1;//升序排序
       };
     },
 
@@ -300,11 +313,6 @@ export default {
 
       return res;
     },
-    getPositionData () {
-      this.$fetchGet("/cycling/user/getPositionList", this.query).then(res => {
-        console.log(res);
-      });
-    }
   }
 };
 </script>
