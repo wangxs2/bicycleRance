@@ -16,7 +16,7 @@
           style="width: 100%; height: 100%; object-fit: fill"
         >
           <source
-            src="//al.hls.huya.com/src/367138632-367138632-1576848417538179072-734400720-10057-A-0-1.m3u8?ratio=2000&wsSecret=09ffa91b55a7b514d003ab81588fc9c2&wsTime=607fbf14&fm=RFdxOEJjSjNoNkRKdDZUWV8kMF8kMV8kMl8kMw%3D%3D&ctype=tars_mobile&fs=bgct&&sphdcdn=al_7-tx_3-js_3-ws_7-bd_2-hw_2&sphdDC=huya&sphd=264_*-265_*&t=103"
+            src="//bd.hls.huya.com/src/18358377-18358377-78848628822638592-36840210-10057-A-0-1.m3u8?ratio=2000&wsSecret=5f18674b2305e31a5ca37f50a1b63415&wsTime=6088e280&fm=RFdxOEJjSjNoNkRKdDZUWV8kMF8kMV8kMl8kMw%3D%3D&ctype=tars_mobile&txyp=o%3Acs7%3B&fs=bgct&&sphdcdn=al_7-tx_3-js_3-ws_7-bd_2-hw_2&sphdDC=huya&sphd=264_*-265_*&t=103"
             type="application/x-mpegURL"
           />
         </video>
@@ -94,8 +94,38 @@ export default {
     background: url('../../assets/image/k4@3x.png');
     background-size: 100% 100%;
     .video-js-box {
-      width: 90%;
-      height: 90%;
+      width: 95.8%;
+      height: 93%;
+      // z-index: -1;
+      .margin (0, 0, 0, 0);
+      -webkit-clip-path: polygon(
+        38% 0,
+        40.5% 3.5%,
+        60% 3.5%,
+        62.6% 0,
+        95.8% 0,
+        100% 7%,
+        100% 94%,
+        96.3% 100%,
+        4.2% 100%,
+        0 94%,
+        0 6.8%,
+        4.3% 0
+      );
+      clip-path: polygon(
+        38% 0,
+        40.5% 3.5%,
+        60% 3.5%,
+        62.6% 0,
+        95.8% 0,
+        100% 7%,
+        100% 94%,
+        96.3% 100%,
+        4.2% 100%,
+        0 94%,
+        0 6.8%,
+        4.3% 0
+      );
     }
   }
 }
