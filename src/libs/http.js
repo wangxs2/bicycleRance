@@ -11,7 +11,7 @@ import {
 // 创建axios实例
 export const Axios = axios.create({
   baseURL:'/',  // baseURL: "/api2db/",
-  timeout: 10000,
+  timeout: 30000,
   withCredentials: true // 是否允许带cookie这些
 });
 

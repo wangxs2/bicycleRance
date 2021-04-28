@@ -1,5 +1,10 @@
 <template>
   <div class="all-box" id="container">
+    <div class="infowindow">
+      <div class="name">Id:{{ curInfoWindow.id }}</div>
+      <div class="name">姓名:{{ curInfoWindow.userName }}</div>
+      <div class="name">设备号：{{ curInfoWindow.imei }}</div>
+    </div>
     <div class="header-box"></div>
     <div class="left-box">
       <leftbox></leftbox>
@@ -30,14 +35,7 @@ export default {
       passedPolyline: null,
       timer: null, //d定时掉接口
       allpoint: [],
-      allpoint1: [],
-      allpolyine: [],
-      allpolyPath: [],
       carGroup: new AMap.OverlayGroup(), // 参赛群组
-      carGroup1: new AMap.OverlayGroup(), // 参赛群组
-      PolylineGroup: new AMap.OverlayGroup(), // 参赛群组的路径
-      num: 0,
-      testData: [],
       heatmap: null,
       heatmapData: [],
       query: {
@@ -52,13 +50,35 @@ export default {
       curMarkerList: [],
       linePathList: [],
       curDataList: [],
+      curInfoWindow: {},
 
     };
   },
   created () {
     this.getImeis()
+    let that = this
+    this.timerHeatMap = setInterval(() => {
+      if (that.heatmap) {
+        that.heatmap.setMap(null)
+      }
+      that.curDataList.forEach(item => {
+        item.count = 0
+      })
+      that.allpoint.forEach((item, index) => {
+        that.curDataList.forEach((items, indexs) => {
+          var p1 = [items.lng, items.lat];
+          var p2 = [item.getExtData().lng, item.getExtData().lat];
+          let distance = AMap.GeometryUtil.distance(p1, p2);
+          if (distance <= 200) {
+            items.count = items.count + 1
+          }
+        })
+      })
+      that.heatMap()
+      that.heatmapData = that.cloneObj(that.curDataList)
+      that.heatmap.setDataSet({ data: that.heatmapData, min: 1, max: 100 });
+    }, 10000);
   },
-
   mounted () {
     this.initmap();
     if (sessionStorage.getItem("isReload")) {
@@ -87,6 +107,7 @@ export default {
   },
   destroyed () {
     this.websock.close(); //离开路由之后断开websocket连接
+    clearInterval(this.timerHeatMap);
   },
   methods: {
     getImeis () {
@@ -114,7 +135,6 @@ export default {
         this.heatmap.setDataSet({ data: this.heatmapData, min: 1, max: 100 });
         let arrw = res.content.slice(0, 10)
         this.$store.commit("SET_RANK", arrw);
-        // this.carGroup1.addOverlays(this.allpoint1);
         this.initWebSocket();
       })
     },
@@ -138,10 +158,6 @@ export default {
 
       };
       this.websock.onmessage = res => {
-        if (this.heatmap) {
-          this.heatmap.setMap(null)
-        }
-        this.heatMap()
         console.log("接收数据");
         this.curMarkerAllData = []
         this.curMarkerList = []
@@ -171,22 +187,9 @@ export default {
                 curInfo.curMarkerData.push([objme.lng, objme.lat])
               }
               curInfo.rankNumber = AMap.GeometryUtil.distanceOfLine(curInfo.curMarkerData);
-              // console.log(curInfo.userName, curInfo.rankNumber, '5555555555')
-              // console.log(888888888)
-              this.curDataList.forEach((items, indexs) => {
-                var p1 = [items.lng, items.lat];
-                var p2 = [objme.lng, objme.lat];
-                var p3 = [oldLng, oldLat];
-                let distance = AMap.GeometryUtil.distance(p1, p3);
-                let distance1 = AMap.GeometryUtil.distance(p1, p2);
-                if (distance <= 200) {
-                  items.count = items.count - 1
-                }
-                if (distance1 <= 200) {
-                  items.count = items.count + 1
-
-                }
-              })
+              // console.log(curInfo.userName, curInfo.rankNumber)
+              item.getExtData().lng = objme.lng
+              item.getExtData().lat = objme.lat
             }
 
           })
@@ -198,14 +201,6 @@ export default {
           this.$store.commit("SET_RANK", arr.slice(0, 10));
         }
 
-        let that = this
-        if (this.timerHeatMap) {
-          clearInterval(this.timerHeatMap);
-        }
-        // this.timerHeatMap = setInterval(() => {
-        that.heatmapData = that.cloneObj(that.curDataList)
-        that.heatmap.setDataSet({ data: that.heatmapData, min: 1, max: 100 });
-        // }, 1000);
 
       };
       this.websock.onerror = e => {
@@ -226,7 +221,7 @@ export default {
       this.MyMip.plugin(["AMap.HeatMap"], () => {
         //初始化heatmap对象
         this.heatmap = new AMap.HeatMap(this.MyMip, {
-          radius: 25, //给定半径
+          radius: 65, //给定半径
           opacity: [0, 0.8]
         });
       });
@@ -235,8 +230,7 @@ export default {
       this.MyMip = new AMap.Map("container", {
         resizeEnable: true,
         zoom: 11.6,
-        // center: [121.003735, 31.021249],
-        center: [121.294115, 31.164401],
+        center: [121.003735, 31.021249],
 
         mapStyle: "amap://styles/acd388fb971c7574c3c9219b4b04d90d"
       });
@@ -244,7 +238,6 @@ export default {
         alert('热力图仅对支持canvas的浏览器适用,您所使用的浏览器不能使用热力图功能,请换个浏览器试试~')
       }
       this.MyMip.add(this.carGroup);
-      this.MyMip.add(this.PolylineGroup);
       let mypath = linePath.linePath
       let markerq = new AMap.Marker({
         icon: require("../../assets/image/qw.png"),
@@ -287,10 +280,13 @@ export default {
     setMarker (row) {
       let marker = new AMap.Marker({
         position: [row.lng, row.lat],
-        icon: require("./car.png"),
+        icon: require("./arrow2@3x.png"),
         offset: new AMap.Pixel(-17, -16),
         extData: row
       });
+      marker.on('click', e => {
+        this.curInfoWindow = e.target.getExtData()
+      })
       return marker;
     },
     setPolyline () {
@@ -341,6 +337,23 @@ export default {
   flex-direction: column;
   overflow: hidden;
   position: relative;
+
+  .infowindow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 300px;
+    border: 1px solid #fff;
+    background: blue;
+    color: #fff;
+    padding: 10px;
+    box-sizing: border-box;
+    line-height: 24px;
+    z-index: 300;
+    text-align: left;
+    font-size: 18px;
+  }
+
   .header-box {
     .vh(219);
     width: 100%;
