@@ -143,7 +143,7 @@ export default {
       //初始化weosocket
       const wsuri = "ws://101.231.47.116:50000/cycling/realtime/socket";
       // const wsuri = "ws://192.168.1.106:8080/cycling/realtime/socket";
-      // const wsuri = "ws://192.168.1.104:8080/cycling/realtime/socket";
+      // const wsuri = "ws://192.168.1.103:8080/cycling/realtime/socket";
 
       // const wsuri = "ws://10.1.30.202:50000/cycling/realtime/socket";
       this.websock = new WebSocket(wsuri);
@@ -357,7 +357,8 @@ export default {
   .header-box {
     .vh(219);
     width: 100%;
-    background: url('../../assets/image/TOP@3x.png');
+    background: url('../../assets/image/TOP@3x.png') no-repeat;
+    background-size: 100% 100%;
     z-index: 10;
   }
   .left-box {

@@ -16,7 +16,7 @@
           style="width: 100%; height: 100%; object-fit: fill"
         >
           <source
-            src="//bd.hls.huya.com/src/18358377-18358377-78848628822638592-36840210-10057-A-0-1.m3u8?ratio=2000&wsSecret=5f18674b2305e31a5ca37f50a1b63415&wsTime=6088e280&fm=RFdxOEJjSjNoNkRKdDZUWV8kMF8kMV8kMl8kMw%3D%3D&ctype=tars_mobile&txyp=o%3Acs7%3B&fs=bgct&&sphdcdn=al_7-tx_3-js_3-ws_7-bd_2-hw_2&sphdDC=huya&sphd=264_*-265_*&t=103"
+            src="https://m.huya.com/18566248?platform=7&from=7&shareid=17936502630180144380&shareUid=2311586290&source=android&pid=2311586290&share_fm=lianjie&share_by=2"
             type="application/x-mpegURL"
           />
         </video>

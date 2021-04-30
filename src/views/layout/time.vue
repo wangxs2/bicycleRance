@@ -14,7 +14,7 @@ export default {
     return {
       isStart: false,
       globalTimer: null, //获取setInterval对象值
-      countString: "0秒", //用来显示时间
+      countString: "", //用来显示时间
       day: 0,
       hour: 0,
       minute: 0,
@@ -59,10 +59,9 @@ export default {
     }
   },
   mounted () {
-    var vm = this;
-    if (vm.autoStart) {
-      vm.startCountFn();
-    }
+
+    this.countDown()
+
   },
   computed: {
     needSendSunc: function () {
@@ -79,6 +78,35 @@ export default {
   },
   components: {},
   methods: {
+    // 倒计时
+    countDown () {
+      const that = this;
+      //设置截止时间
+      let outTime = "2021-05-16 13:00:00"
+      // let outTime = "2021-05-16 13:00:00"
+      let endDate = new Date(outTime).getTime();
+      let timeID = setInterval(function () {
+        //获取当前时间
+        let date = new Date();
+        let startDate = date.getTime();
+        //时间差  
+        let leftTime = endDate - startDate;
+        if (leftTime >= 0) {
+          that.remainD = Math.floor(leftTime / 1000 / 60 / 60 / 24);
+          that.remainH = Math.floor(leftTime / 1000 / 60 / 60 % 24) + that.remainD * 24;
+          that.remainM = Math.floor(leftTime / 1000 / 60 % 60) < 10 ? '0' + Math.floor(leftTime / 1000 / 60 % 60) : Math.floor(leftTime / 1000 / 60 % 60);
+          that.remainS = Math.floor(leftTime / 1000 % 60) < 10 ? '0' + Math.floor(leftTime / 1000 % 60) : Math.floor(leftTime / 1000 % 60);
+          console.log(that.remainH + '时' + that.remainM + '分' + that.remainS + '秒')
+          that.countString = `${that.remainH < 10 ? '0' + that.remainH : that.remainH}:${that.remainM}:${that.remainS}`;
+        } else {
+          if (that.autoStart) {
+            that.startCountFn();
+          }
+          clearInterval(timeID);
+        }
+      }, 1000)
+    },
+    // 计算当前比赛进行时间
     counterFn: function (counterTime) {
       var vm = this;
       var nowDate = new Date().getTime();
@@ -95,15 +123,6 @@ export default {
       vm.hour = Math.floor(leave1 / (3600 * 1000)) < 10 ? '0' + Math.floor(leave1 / (3600 * 1000)) : Math.floor(leave1 / (3600 * 1000)); //计算相差小时
       vm.minute = Math.floor(leave2 / (60 * 1000)) < 10 ? '0' + Math.floor(leave2 / (60 * 1000)) : Math.floor(leave2 / (60 * 1000)); //计算相差分钟
       vm.second = Math.round(leave3 / 1000) < 10 ? '0' + Math.round(leave3 / 1000) : Math.round(leave3 / 1000); //计算相差秒
-      //   if (vm.day > 0) {
-      //     vm.countString = `${vm.day}天 ${vm.hour}小时 ${vm.minute}分 ${vm.second}秒`;
-      //   } else if (vm.hour > 0) {
-      //     vm.countString = `${vm.hour}小时 ${vm.minute}分 ${vm.second}秒`;
-      //   } else if (vm.minute > 0) {
-      //     vm.countString = `${vm.minute}分 ${vm.second}秒`;
-      //   } else {
-      //     vm.countString = `${vm.second}秒`;
-      //   }
       vm.countString = `${vm.hour}:${vm.minute}:${vm.second}`;
     },
     startCountFn: function () {
