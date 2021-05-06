@@ -96,7 +96,6 @@ export default {
           that.remainH = Math.floor(leftTime / 1000 / 60 / 60 % 24) + that.remainD * 24;
           that.remainM = Math.floor(leftTime / 1000 / 60 % 60) < 10 ? '0' + Math.floor(leftTime / 1000 / 60 % 60) : Math.floor(leftTime / 1000 / 60 % 60);
           that.remainS = Math.floor(leftTime / 1000 % 60) < 10 ? '0' + Math.floor(leftTime / 1000 % 60) : Math.floor(leftTime / 1000 % 60);
-          console.log(that.remainH + '时' + that.remainM + '分' + that.remainS + '秒')
           that.countString = `${that.remainH < 10 ? '0' + that.remainH : that.remainH}:${that.remainM}:${that.remainS}`;
         } else {
           if (that.autoStart) {

@@ -69,7 +69,7 @@ export default {
           var p1 = [items.lng, items.lat];
           var p2 = [item.getExtData().lng, item.getExtData().lat];
           let distance = AMap.GeometryUtil.distance(p1, p2);
-          if (distance <= 200) {
+          if (item.getExtData().lng != 0 && item.getExtData.lat != 0 && distance <= 200) {
             items.count = items.count + 1
           }
         })
@@ -120,7 +120,7 @@ export default {
           items.count = 0;
           items.rankNumber = 0;
           this.allpoint.push(this.setMarker(items));
-          this.carGroup.addOverlays(this.allpoint);
+          // this.carGroup.addOverlays(this.allpoint);
           // 计算点位是否在当前路线点200米之内
           this.curDataList.forEach((item, index) => {
             var p1 = [item.lng, item.lat];
@@ -164,14 +164,16 @@ export default {
         this.$store.commit("SET_RANK", []);
         let objme = JSON.parse(res.data).content[0];
 
+        // console.log(objme.id, objme.userName, objme.lng, objme.lat)
         if (objme) {
           this.allpoint.forEach((item, index) => {
-            var oldLng = item.getExtData().lng
-            var oldLat = item.getExtData().lat
-            if (item.getExtData().curMarkerObj) {
-              this.curMarkerAllData.push(item.getExtData().curMarkerObj)
-            }
-            if (objme.imei == item.getExtData().imei) {
+            item.getExtData().oldLng = item.getExtData().lng
+            item.getExtData().oldLat = item.getExtData().lat
+            if (objme.lng !== 0 && objme.lat !== 0 && objme.imei == item.getExtData().imei) {
+
+              if (item.getExtData().curMarkerObj) {
+                this.curMarkerAllData.push(item.getExtData().curMarkerObj)
+              }
               this.allpoint[index].setPosition(
                 new AMap.LngLat(objme.lng, objme.lat)
               ); //实时更新自行车的位置
@@ -190,18 +192,22 @@ export default {
               // console.log(curInfo.userName, curInfo.rankNumber)
               item.getExtData().lng = objme.lng
               item.getExtData().lat = objme.lat
+
+              this.curMarkerList = this.curMarkerAllData
+              let arr = this.curMarkerList.sort(
+                this.createComprisonFunction("rankNumber")
+              );
+              this.$store.commit("SET_RANK", arr.slice(0, 10));
+            } else if (objme.lng == 0 && objme.lat == 0 && objme.imei == item.getExtData().imei) {
+              this.allpoint[index].setMap(null);
+
+              item.getExtData().lng = objme.lng
+              item.getExtData().lat = objme.lat
             }
 
           })
 
-          this.curMarkerList = this.curMarkerAllData
-          let arr = this.curMarkerList.sort(
-            this.createComprisonFunction("rankNumber")
-          );
-          this.$store.commit("SET_RANK", arr.slice(0, 10));
         }
-
-
       };
       this.websock.onerror = e => {
         console.log("链接失败", e);
@@ -229,15 +235,17 @@ export default {
     initmap () {
       this.MyMip = new AMap.Map("container", {
         resizeEnable: true,
-        zoom: 11.6,
-        center: [121.003735, 31.021249],
+        // zoom: 11.6,
+        // center: [121.003735, 31.021249],
+        zoom: 13.5,
+        center: [121.008434, 31.038352],
 
         mapStyle: "amap://styles/acd388fb971c7574c3c9219b4b04d90d"
       });
       if (!this.isSupportCanvas()) {
         alert('热力图仅对支持canvas的浏览器适用,您所使用的浏览器不能使用热力图功能,请换个浏览器试试~')
       }
-      this.MyMip.add(this.carGroup);
+      // this.MyMip.add(this.carGroup);
       let mypath = linePath.linePath
       let markerq = new AMap.Marker({
         icon: require("../../assets/image/qw.png"),
@@ -279,6 +287,7 @@ export default {
     },
     setMarker (row) {
       let marker = new AMap.Marker({
+        map: this.MyMip,
         position: [row.lng, row.lat],
         icon: require("./arrow2@3x.png"),
         offset: new AMap.Pixel(-17, -16),
