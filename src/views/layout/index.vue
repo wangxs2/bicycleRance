@@ -1,10 +1,10 @@
 <template>
   <div class="all-box" id="container">
-    <div class="infowindow">
+    <!-- <div class="infowindow">
       <div class="name">Id:{{ curInfoWindow.id }}</div>
       <div class="name">姓名:{{ curInfoWindow.userName }}</div>
       <div class="name">设备号：{{ curInfoWindow.imei }}</div>
-    </div>
+    </div> -->
     <div class="header-box"></div>
     <div class="left-box">
       <leftbox></leftbox>
@@ -48,9 +48,11 @@ export default {
       timerHeatMap: null,
 
       curMarkerList: [],
+      curMarkerAllData:[],
       linePathList: [],
       curDataList: [],
       curInfoWindow: {},
+      hhh:0,
 
     };
   },
@@ -99,7 +101,7 @@ export default {
       let obj = {
         lng: item[0],
         lat: item[1],
-        count: 0
+        count: 1
       }
       this.curDataList.push(obj)
     })
@@ -134,6 +136,8 @@ export default {
         this.heatmapData = this.cloneObj(this.curDataList)
         this.heatmap.setDataSet({ data: this.heatmapData, min: 1, max: 100 });
         let arrw = res.content.slice(0, 10)
+
+
         this.$store.commit("SET_RANK", arrw);
         this.initWebSocket();
       })
@@ -141,42 +145,37 @@ export default {
     countTime () { },
     initWebSocket () {
       //初始化weosocket
-      const wsuri = "ws://101.231.47.116:50000/cycling/realtime/socket";
+      // const wsuri = "ws://101.231.47.116:50000/cycling/realtime/socket";
       // const wsuri = "ws://192.168.1.106:8080/cycling/realtime/socket";
       // const wsuri = "ws://192.168.1.103:8080/cycling/realtime/socket";
 
-      // const wsuri = "ws://10.1.30.202:50000/cycling/realtime/socket";
+      const wsuri = "ws://10.1.30.202:50000/cycling/realtime/socket";
       this.websock = new WebSocket(wsuri);
       this.websock.onopen = event => {
         console.log("数据已经链接", event);
-        let that = this
-        this.timerSocket = setInterval(() => {
-          this.allpoint.forEach(item => {
-            that.websock.send('cycling_' + item.getExtData().imei)
-          })
-        }, 1000);
-
+        this.timerFun()
+        
       };
       this.websock.onmessage = res => {
         console.log("接收数据");
-        this.curMarkerAllData = []
-        this.curMarkerList = []
-        this.$store.commit("SET_RANK", []);
+       
+        // this.curMarkerAllData = []
+        // this.curMarkerList = []
+        // this.$store.commit("SET_RANK", []);
         let objme = JSON.parse(res.data).content[0];
-
-        // console.log(objme.id, objme.userName, objme.lng, objme.lat)
+        
         if (objme) {
+         console.log(this.allpoint,"allpoint")
           this.allpoint.forEach((item, index) => {
             item.getExtData().oldLng = item.getExtData().lng
             item.getExtData().oldLat = item.getExtData().lat
-            if (objme.lng !== 0 && objme.lat !== 0 && objme.imei == item.getExtData().imei) {
-
+            if (objme.lng !== 0 && objme.lat !== 0&&objme.imei==item.getExtData().imei ) {
               if (item.getExtData().curMarkerObj) {
-                this.curMarkerAllData.push(item.getExtData().curMarkerObj)
+                this.curMarkerAllData.unshift(item.getExtData().curMarkerObj)
               }
-              this.allpoint[index].setPosition(
-                new AMap.LngLat(objme.lng, objme.lat)
-              ); //实时更新自行车的位置
+              console.log(this.curMarkerAllData,"curMarkerAllData")
+              this.allpoint[index].show()
+              this.allpoint[index].setPosition([objme.lng,objme.lat]); //实时更新自行车的位置
               let curInfo = item.getExtData().curMarkerObj
               for (let i in curInfo) {
                 for (let z in objme) {
@@ -192,14 +191,17 @@ export default {
               // console.log(curInfo.userName, curInfo.rankNumber)
               item.getExtData().lng = objme.lng
               item.getExtData().lat = objme.lat
-
+                console.log(this.curMarkerList)
               this.curMarkerList = this.curMarkerAllData
-              let arr = this.curMarkerList.sort(
+              let qcdata=this.arrDistinctByProp(this.curMarkerList,'imei')
+              let arr = qcdata.sort(
                 this.createComprisonFunction("rankNumber")
               );
+              console.log(arr,"arr")
+              
               this.$store.commit("SET_RANK", arr.slice(0, 10));
-            } else if (objme.lng == 0 && objme.lat == 0 && objme.imei == item.getExtData().imei) {
-              this.allpoint[index].setMap(null);
+            } else if (objme.lng == 0 && objme.lat == 0 &&objme.imei==item.getExtData().imei) {
+              this.allpoint[index].hide();
 
               item.getExtData().lng = objme.lng
               item.getExtData().lat = objme.lat
@@ -222,6 +224,27 @@ export default {
           this.initWebSocket();
         }
       };
+    },
+   arrDistinctByProp(arr,prop){
+            let obj = {};
+            return arr.reduce(function(preValue,item){
+                obj[item[prop]] ? '' : obj[item[prop]] = true && preValue.push(item);
+                return preValue
+            },[])
+    },
+        // 根据name去重
+        
+     
+    timerFun(){
+      //要执行的操作
+      this.allpoint.forEach(item => {
+          this.websock.send('cycling_' + item.getExtData().imei)
+        })
+      var timer=setTimeout(()=>{
+        this.timerFun()
+        clearTimeout(timer)
+      },5000)
+
     },
     heatMap () {
       this.MyMip.plugin(["AMap.HeatMap"], () => {
@@ -260,6 +283,8 @@ export default {
       });
       markerz.setMap(this.MyMip);
       let wdata = this.separateArr(mypath, 2);
+
+      // console.log(wdata)
       let poyline = new AMap.Polyline({
         path: wdata,
         map: this.MyMip,
@@ -364,8 +389,9 @@ export default {
   }
 
   .header-box {
-    .vh(219);
+    // .vh(219);
     width: 100%;
+    height: 219px;
     background: url('../../assets/image/TOP@3x.png') no-repeat;
     background-size: 100% 100%;
     z-index: 10;

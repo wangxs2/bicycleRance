@@ -2,7 +2,9 @@ const app = {
   state: {
     // docHeight: $(document).height() - 180, //文档高度
     menuFlag: false, //左侧菜单的开关
-    rankingData:[],
+    rankingData:[
+      
+    ],
     weatherobj:{},
     
   },

@@ -1,11 +1,11 @@
 <template>
   <div class="right-container">
     <div class="videobox">
-      <!-- <iframe
+      <iframe
         style="width: 90%; height: 90%"
-        src="https://m.huya.com/24565242?platform=7&from=7&shareid=10895011770800932880&shareUid=1199575385525&source=android&pid=1199575385525&share_fm=lianjie&share_by=2"
-      ></iframe> -->
-      <div class="video-js-box">
+        src="http://liveshare.huya.com/iframe/52724"
+      ></iframe>
+      <!-- <div class="video-js-box">
         <video
           id="my-video"
           muted
@@ -16,18 +16,18 @@
           style="width: 100%; height: 100%; object-fit: fill"
         >
           <source
-            src="https://m.huya.com/18566248?platform=7&from=7&shareid=17936502630180144380&shareUid=2311586290&source=android&pid=2311586290&share_fm=lianjie&share_by=2"
+            src="http://liveshare.huya.com/iframe/24565242"
             type="application/x-mpegURL"
           />
         </video>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
 
 <script>
-import videojs from 'video.js'
-import 'videojs-contrib-hls'
+// import videojs from 'video.js'
+// import 'videojs-contrib-hls'
 export default {
   components: {},
   data () {
@@ -39,15 +39,15 @@ export default {
   created () { },
   mounted () {
 
-    videojs('my-video', {
-      bigPlayButton: false,
-      textTrackDisplay: false,
-      posterImage: true,
-      errorDisplay: false,
-      controlBar: true
-    }, function () {
-      this.play()
-    })
+    // videojs('my-video', {
+    //   bigPlayButton: false,
+    //   textTrackDisplay: false,
+    //   posterImage: true,
+    //   errorDisplay: false,
+    //   controlBar: true
+    // }, function () {
+    //   this.play()
+    // })
     //初始化视频
     // if(this.videoUrl){
     //     this.myPlayer = this.$video(myVideo, {

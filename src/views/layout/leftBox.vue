@@ -26,10 +26,9 @@
         <div class="tab-tit3">速度<br />km/h</div>
       </div>
       <div class="lb-box">
-        <div class="swiper-container">
-          <div class="swiper-wrapper">
+      
             <div
-              class="swiper-slide"
+              class=""
               v-for="(itam, index) in $store.getters.rankingData"
               :key="index"
             >
@@ -62,15 +61,14 @@
                 <div class="indexnum">{{ itam.speed }}km/h</div>
               </div>
             </div>
-          </div>
-        </div>
+       
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import Swiper from "swiper";
+// import Swiper from "swiper";
 import timexs from "./time.vue";
 // import 'swiper/dist/css/swiper.min.css'
 export default {
@@ -89,25 +87,9 @@ export default {
     '$store.getters.rankingData': {
       handler: function (newVal, oldVal) {
         // TO DO
-        if (this.mySwiper) {
-          this.mySwiper.destroy();
-        }
-        // console.log("newVal:", newVal);
-        // newVal.forEach(item => {
-        //   console.log(item.userName + ' ' + item.rankNumber)
-        // })
-        this.mySwiper = new Swiper(".swiper-container", {
-          // autoplay: {
-          //   delay: 5000,
-          //   stopOnLastSlide: false,
-          //   disableOnInteraction: true
-          // },
-          // mousewheel: true,
-          direction: 'vertical',
-          // loop: true, // 循环模式选项
-          observer: true, // 修改swiper自己或子元素时，自动初始化swiper
-          observeParents: true // 修改swiper的父元素时，自动初始化swiper
-        });
+        console.log(newVal)
+      
+     
       },
       deep: true,
       immediate: true
@@ -117,18 +99,18 @@ export default {
     // this.testTimer()
   },
   mounted () {
-    this.mySwiper = new Swiper(".swiper-container", {
-      autoplay: {
-        delay: 5000,
-        stopOnLastSlide: false,
-        disableOnInteraction: true
-      },
-      // mousewheel: true,
-      direction: 'vertical',
-      loop: true, // 循环模式选项
-      observer: true, // 修改swiper自己或子元素时，自动初始化swiper
-      observeParents: true // 修改swiper的父元素时，自动初始化swiper
-    });
+    // this.mySwiper = new Swiper(".swiper-container", {
+    //   autoplay: {
+    //     delay: 5000,
+    //     stopOnLastSlide: false,
+    //     disableOnInteraction: true
+    //   },
+    //   // mousewheel: true,
+    //   direction: 'vertical',
+    //   loop: true, // 循环模式选项
+    //   observer: true, // 修改swiper自己或子元素时，自动初始化swiper
+    //   observeParents: true // 修改swiper的父元素时，自动初始化swiper
+    // });
     /* 鼠标滑过pagination控制swiper切换*/
   },
   methods: {
@@ -248,17 +230,7 @@ export default {
     }
     .lb-box {
       flex: 1;
-      .swiper-container {
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-        // .swiper-wrapper{
-        //    width:100%;
-        // height:100%;
-        // }
-        .swiper-slide {
-          width: 100%;
-          .vh(60) !important;
+     
           .itampaiming {
             width: 100%;
             .vh(60);
@@ -294,8 +266,7 @@ export default {
                 .margin(0,0,0,6);
               }
             }
-          }
-        }
+         
       }
     }
     .tab-tit {

@@ -2,7 +2,7 @@ const path = require('path')
 module.exports = {
 
   lintOnSave: false,
-  outputDir:"apitest", //打包后的项目目录名称
+  outputDir:"bicycleRace", //打包后的项目目录名称
   publicPath: "./",
   // baseUrl: process.env_NODE_ENV == 'production' ? '/vehiclerepair/' : '', // 部署项目路径
   devServer: {
@@ -13,8 +13,8 @@ module.exports = {
     proxy: {
       '/cycling/*': {
         // target: 'http://10.1.4.175:8001/traffic-investment',
-        // target: 'http://10.1.30.202:50000/cycling',
-        target: 'http://101.231.47.116:50000/cycling',
+        target: 'http://10.1.30.202:50000/cycling',
+        // target: 'http://101.231.47.116:50000/cycling',
         // target: 'http://192.168.1.106:8080/cycling',
         // target: 'http://192.168.1.103:8080/cycling',
         // target: 'http://10.1.30.207:50045/api2db', // 测试
