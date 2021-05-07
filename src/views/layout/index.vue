@@ -146,10 +146,9 @@ export default {
     initWebSocket () {
       //初始化weosocket
       // const wsuri = "ws://101.231.47.116:50000/cycling/realtime/socket";
-      // const wsuri = "ws://192.168.1.106:8080/cycling/realtime/socket";
+      const wsuri = "ws://192.168.1.100:50000/cycling/realtime/socket";
       // const wsuri = "ws://192.168.1.103:8080/cycling/realtime/socket";
-
-      const wsuri = "ws://10.1.30.202:50000/cycling/realtime/socket";
+      // const wsuri = "ws://10.1.30.202:50000/cycling/realtime/socket";
       this.websock = new WebSocket(wsuri);
       this.websock.onopen = event => {
         console.log("数据已经链接", event);
@@ -165,7 +164,6 @@ export default {
         let objme = JSON.parse(res.data).content[0];
         
         if (objme) {
-         console.log(this.allpoint,"allpoint")
           this.allpoint.forEach((item, index) => {
             item.getExtData().oldLng = item.getExtData().lng
             item.getExtData().oldLat = item.getExtData().lat
@@ -173,7 +171,6 @@ export default {
               if (item.getExtData().curMarkerObj) {
                 this.curMarkerAllData.unshift(item.getExtData().curMarkerObj)
               }
-              console.log(this.curMarkerAllData,"curMarkerAllData")
               this.allpoint[index].show()
               this.allpoint[index].setPosition([objme.lng,objme.lat]); //实时更新自行车的位置
               let curInfo = item.getExtData().curMarkerObj
@@ -188,16 +185,13 @@ export default {
                 curInfo.curMarkerData.push([objme.lng, objme.lat])
               }
               curInfo.rankNumber = AMap.GeometryUtil.distanceOfLine(curInfo.curMarkerData);
-              // console.log(curInfo.userName, curInfo.rankNumber)
               item.getExtData().lng = objme.lng
               item.getExtData().lat = objme.lat
-                console.log(this.curMarkerList)
               this.curMarkerList = this.curMarkerAllData
               let qcdata=this.arrDistinctByProp(this.curMarkerList,'imei')
               let arr = qcdata.sort(
                 this.createComprisonFunction("rankNumber")
               );
-              console.log(arr,"arr")
               
               this.$store.commit("SET_RANK", arr.slice(0, 10));
             } else if (objme.lng == 0 && objme.lat == 0 &&objme.imei==item.getExtData().imei) {
@@ -244,14 +238,20 @@ export default {
         this.timerFun()
         clearTimeout(timer)
       },5000)
-
     },
     heatMap () {
       this.MyMip.plugin(["AMap.HeatMap"], () => {
         //初始化heatmap对象
         this.heatmap = new AMap.HeatMap(this.MyMip, {
           radius: 65, //给定半径
-          opacity: [0, 0.8]
+          opacity: [0, 0.8],
+          gradient:{
+              0.05: '#006cff',
+              0.15: '#00f0ff',
+              0.2: '#00cc43',
+              0.25: '#f6ff00',
+              0.3: '#fd1704'
+          },
         });
       });
     },

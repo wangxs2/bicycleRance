@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-
+import test from './views/test';
 Vue.use(Router);
 
 const originalPush = Router.prototype.push
@@ -12,7 +12,13 @@ export default new Router({
   // mode: 'history',
   // base: process.env.BASE_URL,
   routes: [
-    
+    // {
+    //   path: '/c',
+    //   name: 'test',
+    //   component:() =>
+    //   import(/* webpackChunkName: "about" */ './views/test.vue'),
+     
+    // },
     {
       path: '/',
       name: 'layout',
