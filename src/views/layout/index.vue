@@ -57,30 +57,29 @@ export default {
     };
   },
   created () {
-    console.log(window.location.href)
     this.getImeis()
     let that = this
-    this.timerHeatMap = setInterval(() => {
-      if (that.heatmap) {
-        that.heatmap.setMap(null)
-      }
-      that.curDataList.forEach(item => {
-        item.count = 0
-      })
-      that.allpoint.forEach((item, index) => {
-        that.allpoint.forEach((items, indexs) => {
-          var p1 = [items.getExtData().lng, items.getExtData().lat];
-          var p2 = [item.getExtData().lng, item.getExtData().lat];
-          let distance = AMap.GeometryUtil.distance(p1, p2);
-          if (item.getExtData().lng != 0 && item.getExtData.lat != 0 && distance <= 200) {
-            items.count = items.count + 1
-          }
-        })
-      })
-      that.heatMap()
-      that.heatmapData = that.cloneObj(that.curDataList)
-      that.heatmap.setDataSet({ data: that.heatmapData, min: 1, max: 100 });
-    }, 10000);
+    // this.timerHeatMap = setInterval(() => {
+    //   if (that.heatmap) {
+    //     that.heatmap.setMap(null)
+    //   }
+    //   that.curDataList.forEach(item => {
+    //     item.count = 0
+    //   })
+    //   that.allpoint.forEach((item, index) => {
+    //     that.allpoint.forEach((items, indexs) => {
+    //       var p1 = [items.getExtData().lng, items.getExtData().lat];
+    //       var p2 = [item.getExtData().lng, item.getExtData().lat];
+    //       let distance = AMap.GeometryUtil.distance(p1, p2);
+    //       if (item.getExtData().lng != 0 && item.getExtData.lat != 0 && distance <= 200) {
+    //         items.count = items.count + 1
+    //       }
+    //     })
+    //   })
+    //   that.heatMap()
+    //   that.heatmapData = that.cloneObj(that.curDataList)
+    //   that.heatmap.setDataSet({ data: that.heatmapData, min: 1, max: 100 });
+    // }, 10000);
   },
   mounted () {
     this.initmap();
@@ -102,7 +101,7 @@ export default {
       let obj = {
         lng: item[0],
         lat: item[1],
-        count: 1
+        count: 0
       }
       this.curDataList.push(obj)
     })
@@ -125,7 +124,7 @@ export default {
           this.allpoint.push(this.setMarker(items));
           // this.carGroup.addOverlays(this.allpoint);
           // 计算点位是否在当前路线点200米之内
-          this.curDataList.forEach((item, index) => {
+          this.allpoint.forEach((item, index) => {
             var p1 = [item.lng, item.lat];
             var p2 = [items.lng, items.lat];
             let distance = AMap.GeometryUtil.distance(p1, p2);
@@ -147,9 +146,9 @@ export default {
     initWebSocket () {
       //初始化weosocket
       // const wsuri = "ws://101.231.47.116:50000/cycling/realtime/socket";
-      const wsuri = "ws://192.168.1.100:50000/cycling/realtime/socket";
+      // const wsuri = "ws://192.168.1.100:50000/cycling/realtime/socket";
       // const wsuri = "ws://192.168.1.103:8080/cycling/realtime/socket";
-      // const wsuri = "ws://10.1.30.202:50000/cycling/realtime/socket";
+      const wsuri = "ws://10.1.30.202:50000/cycling/realtime/socket";
       this.websock = new WebSocket(wsuri);
       this.websock.onopen = event => {
         console.log("数据已经链接", event);
@@ -305,7 +304,7 @@ export default {
         });
       });
 
-      this.heatMap()
+      // this.heatMap()
     },
     isSupportCanvas () {
       var elem = document.createElement('canvas');
