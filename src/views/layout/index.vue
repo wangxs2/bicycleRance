@@ -68,18 +68,26 @@ export default {
       that.curDataList.forEach(item => {
         item.count = 0
       })
+      let qwedata = []
       that.allpoint.forEach((item, index) => {
+        qwedata.push(
+          {
+            lng: item.getExtData().lng,
+            lat: item.getExtData().lat,
+            count: 0
+          }
+        )
         that.allpoint.forEach((items, indexs) => {
           var p1 = [items.getExtData().lng, items.getExtData().lat];
           var p2 = [item.getExtData().lng, item.getExtData().lat];
           let distance = AMap.GeometryUtil.distance(p1, p2);
           if (item.getExtData().lng != 0 && item.getExtData.lat != 0 && distance <= 200) {
-            items.count = items.count + 1
+            qwedata[index].count = qwedata[index].count + 1
           }
         })
       })
       that.heatMap()
-      that.heatmapData = that.cloneObj(that.curDataList)
+      that.heatmapData = that.cloneObj(qwedata)
       that.heatmap.setDataSet({ data: that.heatmapData, min: 1, max: 100 });
     }, 10000);
 
@@ -99,14 +107,14 @@ export default {
     let mypath = linePath.linePath
     this.linePathList = this.separateArr(mypath, 2);
     this.curDataList = []
-    this.linePathList.forEach(item => {
-      let obj = {
-        lng: item[0],
-        lat: item[1],
-        count: 0
-      }
-      this.curDataList.push(obj)
-    })
+    // this.linePathList.forEach(item => {
+    //   let obj = {
+    //     lng: item[0],
+    //     lat: item[1],
+    //     count: 0
+    //   }
+    //   this.curDataList.push(obj)
+    // })
 
   },
   destroyed () {
@@ -121,22 +129,30 @@ export default {
         res.content.forEach((items, indexs) => {
           items.curMarkerObj = items
           items.curMarkerObj.curMarkerData = []
-          items.curMarkerObj.curMarkerData.push([items.lng, items.lat])
-          items.count = 0;
+          arpoly.push(
+            {
+              lng: items.lng,
+              lat: items.lat,
+              count: 0
+            }
+          )
           items.rankNumber = 0;
           this.allpoint.push(this.setMarker(items, require("./arrow2@3x.png")));
           // this.carGroup.addOverlays(this.allpoint);
           // 计算点位是否在当前路线点200米之内
+
           this.allpoint.forEach((item, index) => {
             var p1 = [item.lng, item.lat];
             var p2 = [items.lng, items.lat];
             let distance = AMap.GeometryUtil.distance(p1, p2);
             if (distance <= 200) {
-              item.count = item.count + 1
+              arpoly[index].count = arpoly[index].count + 1
             }
+
           })
         })
-        this.heatmapData = this.cloneObj(this.curDataList)
+        this.heatmapData = this.cloneObj(arpoly)
+        console.log(arpoly)
         this.heatmap.setDataSet({ data: this.heatmapData, min: 1, max: 100 });
         // let arrw = res.content.slice(0, 10)
 
@@ -167,10 +183,10 @@ export default {
     // 赛车手socket
     initWebSocket () {
       //初始化weosocket
-      const wsuri = "ws://101.231.47.116:50000/cycling/realtime/socket";
+      // const wsuri = "ws://101.231.47.116:50000/cycling/realtime/socket";
       // const wsuri = "ws://192.168.1.100:50000/cycling/realtime/socket";
       // const wsuri = "ws://192.168.1.103:8080/cycling/realtime/socket";
-      // const wsuri = "ws://10.1.30.202:50000/cycling/realtime/socket";
+      const wsuri = "ws://10.1.30.202:50000/cycling/realtime/socket";
       this.websock = new WebSocket(wsuri);
       this.websock.onopen = event => {
         console.log("数据已经链接", event);
@@ -343,7 +359,7 @@ export default {
         });
       });
 
-      // this.heatMap()
+      this.heatMap()
     },
     isSupportCanvas () {
       var elem = document.createElement('canvas');
