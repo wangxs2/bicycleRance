@@ -10,6 +10,10 @@ import dataV from '@jiaminghi/data-view'
 import Videojs from 'video.js'
 import 'video.js/dist/video-js.css'
 
+import ElementUI from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
+Vue.use(ElementUI)
+
 import vueAwesomeSwiper from 'vue-awesome-swiper'
 import 'swiper/css/swiper.css'
 
