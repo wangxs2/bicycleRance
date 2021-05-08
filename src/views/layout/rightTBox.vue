@@ -59,7 +59,7 @@ export default {
     align-items: center;
     position: absolute;
     .left(0);
-    .top(74);
+    .top(35);
     .vw(440);
     .vh(190);
     .padding(40, 32, 40, 32);

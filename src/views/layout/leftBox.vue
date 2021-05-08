@@ -16,19 +16,49 @@
     
     </div>-->
     <div class="gd-box">
+      <div class="tit">周边景点</div>
       <div class="swiper-container">
-        <div class="swiper-wrapper">
+        <!-- <div class="swiper-wrapper">
           <div class="swiper-slide">
             <div class="img-list">
               <img src="../../assets/image/img/qx1.jpg" alt="" />
             </div>
+            <div class="content">
+              金泽镇位于上海市青浦境域西南，是江、
+              浙两省进入上海的西大门，也是上海唯一与江
+              苏省和浙江省交界的镇。金泽全镇总面积
+              108.42平方公里。金泽镇有市级非物质文化遗
+              产“商榻宣卷”和“商榻阿婆茶”。每逢农历三月
+              二十八和九月初九的庙会是金泽的特色民俗风 情。
+            </div>
           </div>
-          <div class="content">
-            青西郊野公园，座落于青浦西侧的金泽。总规划面积22平方公里，现已建成一期4.6平方公里。与上海其他郊野公园相比，这里景区主要环绕与淀山湖连通的近3平方公里大莲湖设置，生态环境极佳。另外还有一片生长在水泊中的衫林作为旅游特色。
+          <div class="swiper-slide">
+            <div class="img-list">
+              <img src="../../assets/image/img/qx1.jpg" alt="" />
+            </div>
+            <div class="content">
+              金泽镇位于上海市青浦境域西南，是江、
+              浙两省进入上海的西大门，也是上海唯一与江
+              苏省和浙江省交界的镇。金泽全镇总面积
+              108.42平方公里。金泽镇有市级非物质文化遗
+              产“商榻宣卷”和“商榻阿婆茶”。每逢农历三月
+              二十八和九月初九的庙会是金泽的特色民俗风 情。
+            </div>
           </div>
-          <div class="swiper-slide">Slide 2</div>
-          <div class="swiper-slide">Slide 3</div>
-        </div>
+          <div class="swiper-slide">
+            <div class="img-list">
+              <img src="../../assets/image/img/qx1.jpg" alt="" />
+            </div>
+            <div class="content">
+              金泽镇位于上海市青浦境域西南，是江、
+              浙两省进入上海的西大门，也是上海唯一与江
+              苏省和浙江省交界的镇。金泽全镇总面积
+              108.42平方公里。金泽镇有市级非物质文化遗
+              产“商榻宣卷”和“商榻阿婆茶”。每逢农历三月
+              二十八和九月初九的庙会是金泽的特色民俗风 情。
+            </div>
+          </div>
+        </div> -->
       </div>
 
       <!-- <div class="tit">
@@ -83,7 +113,7 @@
 </template>
 
 <script>
-// import Swiper from "swiper";
+import Swiper from "swiper";
 import timexs from "./time.vue";
 // import 'swiper/dist/css/swiper.min.css'
 export default {
@@ -114,6 +144,17 @@ export default {
     // this.testTimer()
   },
   mounted () {
+    this.mySwiper = new Swiper('.swiper-container', {
+      autoplay: {
+        delay: 1000,
+        stopOnLastSlide: false,
+        disableOnInteraction: true
+      },
+      // mousewheel: true,
+      loop: true, // 循环模式选项
+      observer: true, // 修改swiper自己或子元素时，自动初始化swiper
+      observeParents: true // 修改swiper的父元素时，自动初始化swiper
+    })
     // this.mySwiper = new Swiper(".swiper-container", {
     //   autoplay: {
     //     delay: 5000,
@@ -219,15 +260,13 @@ export default {
   }
   .gd-box {
     .vw(440);
-    .vh(774);
-    display: flex;
-    flex-direction: column;
+    .vh(750);
     background: url('../../assets/image/k.png');
     background-size: 100% 100%;
     .margin(16, 0, 0, 0);
     box-sizing: border-box;
     .padding(0,20,20,20);
-    .title {
+    .tit {
       width: 100%;
       .font-size(24);
       color: #ffffff;
@@ -237,39 +276,38 @@ export default {
       align-items: center;
       .margin(36,0,0,0);
     }
-    .content {
-      width: 100%;
-      .font-size(16);
-      color: #ffffff;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      .margin(36,0,0,0);
-      .padding(10,10,10,10);
-    }
-    .img-list {
-      img {
-        .vw(400);
-        .vh(310);
+    .swiper-container {
+      .vw(400);
+      // .vw(1320);
+      .vh(630);
+      .swiper-wrapper {
+        // display: flex;
+        // height: 100%;
+        .swiper-slide {
+          // .vw(440);
+          .img-list {
+            .margin(32,0,0,0);
+            img {
+              .vw(400);
+              .vh(360);
+            }
+          }
+          .content {
+            width: 100%;
+            .font-size(20);
+            color: #ffffff;
+            font-family: PingFang SC;
+            font-weight: 500;
+            text-align: left;
+            text-indent: 2em;
+            .line-height(32);
+            .margin(24,0,0,0);
+            .padding(0,12,0,12);
+          }
+        }
       }
     }
-    // .tit {
-    //   width: 100%;
-    //   .font-size(24);
-    //   color: #ffffff;
-    //   display: flex;
-    //   flex-direction: column;
-    //   justify-content: center;
-    //   align-items: center;
-    //   .margin(36,0,0,0);
-    //   .titlin {
-    //     .vw(30);
-    //     .vh(4);
-    //     background: #fff;
-    //     .margin(10,0,0,0);
-    //   }
-    // }
+
     // .lb-box {
     //   flex: 1;
 

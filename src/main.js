@@ -8,7 +8,6 @@ import 'vant/lib/index.css';
 import common from './libs/common.js' //自定义包
 import dataV from '@jiaminghi/data-view'
 import Videojs from 'video.js'
- 
 import 'video.js/dist/video-js.css'
  
 Vue.prototype.$video = Videojs
