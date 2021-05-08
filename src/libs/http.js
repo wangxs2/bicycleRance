@@ -1,29 +1,26 @@
 import axios from 'axios'
-import router from '../router.js'
-import store from '@/store'
-import qs from 'qs'
-import {
-  Loading,
-  Message
-} from 'element-ui'
+import router from '../router/index'
+import store from '@/store';
+import Vue from 'vue'
+import { Toast } from 'vant';
 
+import qs from 'qs'
+Vue.use(Toast);
 
 // 创建axios实例
 export const Axios = axios.create({
-  baseURL:'/',  // baseURL: "/api2db/",
-  timeout: 30000,
+  baseURL: "/cycling",
+  timeout: 3000,
   withCredentials: true // 是否允许带cookie这些
 });
 
 // request拦截器
 Axios.interceptors.request.use(
   config => {
-    if (store.getters.token) {
-      config.headers['token'] = store.getters.token // 让每个请求携带token--['X-Token']为自定义key 请根据实际情况自行修改
-    }
-    return config
+    return config;
   },
   error => {
+
     return Promise.reject(error);
   }
 );
@@ -33,78 +30,69 @@ Axios.interceptors.request.use(
 Axios.interceptors.response.use(
   // 正确处理
   res => {
-    let data = res.data;
-    return data;
+    if (res.status === 200) {
+      let data = res.data;
+      Promise.resolve(res)
+      return data;
+    } else {
+      let data = res.data;
+      Promise.reject(res)
+      return data;
+    }
   },
   // 错误处理
   error => {
     let res = error.response;
-    if (res&&res.status == 401) {
+
+    if (res) {
       switch (res.status) {
         //401 登录过期 返回登录
         case 401:
-          Message.error({
-            message: '登录过期，请重新登录'
-          });
-          router.replace({
-            path: '/login?flag=true'
-          })
-          break;
-        // case 500:
-        //   Message.error({
-        //     message: '登录超时'
-        //   });
-        //   router.replace({
-        //     path: '/login'
-        //   })
-        //   break;
       }
     } else {
-      Message.error({
-        message: '网络错误，请刷新重试'
-      });
-      // router.replace({
-      //   path: '/login'
-      // })
+      // store.commit('changeNetworkSuccess', false);
+      // router.push({ path: '/onOrOffLine' })
     }
     return Promise.reject(error);
   }
 );
 
-// url传参
-function urlParams (method, url, params) {
+// get请求方法
+export function fetchGet (url, params) {
   return new Promise((resolve, reject) => {
-    Axios({
-      url,
-      method,
-      params,
-      headers: {
-        "Content-Type": "application/json;charset=UTF-8"
-      }
-    }).then(
-      res => {
-        resolve(res);
-      },
-      error => {
-        reject(error)
-      }
-    )
+    // get请求处理
+    params = params ? params : "";
+
+    Axios.get(url, {
+      params: params
+    })
+      .then(
+        res => {
+          resolve(res);
+        },
+        error => {
+          reject(error)
+        }
+      )
       .catch((error) => {
         reject(error);
       })
   })
 }
 
-// body传参
-function bodyParams (method, url, params, contentType) {
+// post请求方法
+export function fetchPost (url, params, contentType) {
   return new Promise((resolve, reject) => {
-    Axios({
-      url,
-      method,
-      data: contentType == 'json' ? params : qs.stringify(params),
+    // let _csrf = store.getters['_csrf'];
+    let contentTypeUse = contentType == 'json' ? 'application/json;charset=UTF-8' : 'application/x-www-form-urlencoded;charset=UTF-8';
+    let paramsUse = contentType == 'json' ? params : qs.stringify(params);
+
+    // post请求处理
+    // params = !params ? '' : qs.stringify(params);
+    Axios.post(url, paramsUse, {
       headers: {
-        "Content-Type": contentType == 'json' ? 'application/json;charset=UTF-8' : 'application/x-www-form-urlencoded;charset=UTF-8'
-      }
+        'Content-Type': contentTypeUse
+      },
     }).then(
       res => {
         resolve(res);
@@ -118,18 +106,69 @@ function bodyParams (method, url, params, contentType) {
   })
 }
 
-export function fetchGet (url, params = '') {
-  return urlParams("get", url, params);
-}
-
-export function fetchDelete (url, params = '') {
-  return urlParams("delete", url, params);
-}
-
-export function fetchPost (url, params, contentType) {
-  return bodyParams("post", url, params, contentType);
-}
-
+// put请求方法
 export function fetchPut (url, params, contentType) {
-  return bodyParams("put", url, params, contentType);
+  return new Promise((resolve, reject) => {
+
+    let contentTypeUse = contentType == 'json' ? 'application/json;charset=UTF-8' : 'application/x-www-form-urlencoded;charset=UTF-8';
+    let paramsUse = contentType == 'json' ? params : qs.stringify(params);
+
+    Axios.put(url, paramsUse, {
+      headers: {
+        'Content-Type': contentTypeUse
+      },
+    }).then(
+      res => {
+        resolve(res);
+      },
+
+      error => {
+        reject(error)
+      }
+    ).catch((error) => {
+      reject(error);
+    })
+  })
+}
+
+// delete请求方法
+export function fetchDelete (url, params) {
+  return new Promise((resolve, reject) => {
+    // get请求处理
+    params = params ? params : "";
+    Axios.delete(url, {
+      params: params
+    })
+      .then(
+        res => {
+          resolve(res);
+        },
+        error => {
+          reject(error)
+        }
+      )
+      .catch((error) => {
+        reject(error);
+      })
+  })
+}
+
+// post请求方法上传文件
+export function fetchPostFile (url, params, contentType) {
+  return new Promise((resolve, reject) => {
+    Axios.post(url, params, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      },
+    }).then(
+      res => {
+        resolve(res);
+      },
+      error => {
+        reject(error)
+      }
+    ).catch((error) => {
+      reject(error);
+    })
+  })
 }

@@ -1,30 +1,29 @@
 import Vue from 'vue'
 import App from './App.vue'
-import router from './router.js';
-import 'swiper/css/swiper.css'
+import router from './router'
 import store from './store'
-import './permission' //路由判断
+import {
+  getCookie,
+  delCookie
+} from './libs/util'
+import 'amfe-flexible'
+// import Vconsole from 'vconsole'
 import Vant from 'vant';
-import 'vant/lib/index.css';
-import common from './libs/common.js' //自定义包
-import dataV from '@jiaminghi/data-view'
-import Videojs from 'video.js'
- 
-import 'video.js/dist/video-js.css'
- 
-Vue.prototype.$video = Videojs
-Vue.use(dataV)
-Vue.use(common)
+import common from './libs/common.js'
+import 'vant/lib/index.css'
+import lrz from 'lrz'
 Vue.use(Vant);
+Vue.use(common);
+// Vue.use(lrz);
+// let vConsole = new Vconsole()
 Vue.config.productionTip = false
-
-
-
-
-
-
+// Vue.use(vConsole)
+router.beforeEach((to, from, next) => {
+  
+    next();
+})
 new Vue({
   router,
   store,
-  render: h => h(App),
+  render: h => h(App)
 }).$mount('#app')

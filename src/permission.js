@@ -8,7 +8,7 @@ import router from './router.js'
 //   Message
 // } from 'element-ui'
 import NProgress from 'nprogress' // 进度条
-import 'nprogress/nprogress.css' // progress bar style
+// import 'nprogress/nprogress.css' // progress bar style
 
 NProgress.configure({
   showSpinner: false
