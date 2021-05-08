@@ -249,8 +249,11 @@ export default {
       .padding(10,10,10,10);
     }
     .img-list {
+      .margin(36,0,0,0);
+      
       img {
         .vw(400);
+        border-radius:6px;
         .vh(310);
       }
     }
