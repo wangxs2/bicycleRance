@@ -282,7 +282,7 @@ export default {
       this.MyMip.plugin(["AMap.HeatMap"], () => {
         //初始化heatmap对象
         this.heatmap = new AMap.HeatMap(this.MyMip, {
-          radius: 65, //给定半径
+          radius: 20, //给定半径
           opacity: [0, 0.8],
           gradient: {
             0.05: '#006cff',
@@ -311,13 +311,13 @@ export default {
       let mypath = linePath.linePath
       let markerq = new AMap.Marker({
         icon: require("../../assets/image/qw.png"),
-        position: [120.991449, 31.05981],
+        position: [120.99097658022741, 31.053094606485807],
         offset: new AMap.Pixel(-40, -45)
       });
       markerq.setMap(this.MyMip);
       let markerz = new AMap.Marker({
         icon: require("../../assets/image/dx.png"),
-        position: [121.032578, 31.060097],
+        position: [121.00969149291379, 31.07313499174208],
         offset: new AMap.Pixel(-40, -40)
       });
       markerz.setMap(this.MyMip);

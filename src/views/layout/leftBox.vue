@@ -18,47 +18,33 @@
     <div class="gd-box">
       <div class="tit">周边景点</div>
       <div class="swiper-container">
-        <!-- <div class="swiper-wrapper">
+        <div class="swiper-wrapper">
+          <div class="swiper-pagination" slot="pagination"></div>
           <div class="swiper-slide">
             <div class="img-list">
               <img src="../../assets/image/img/qx1.jpg" alt="" />
             </div>
             <div class="content">
-              金泽镇位于上海市青浦境域西南，是江、
-              浙两省进入上海的西大门，也是上海唯一与江
-              苏省和浙江省交界的镇。金泽全镇总面积
-              108.42平方公里。金泽镇有市级非物质文化遗
-              产“商榻宣卷”和“商榻阿婆茶”。每逢农历三月
-              二十八和九月初九的庙会是金泽的特色民俗风 情。
+              青西郊野公园，座落于青浦西侧的金泽。总规划面积22平方公里，现已建成一期4.6平方公里。与上海其他郊野公园相比，这里景区主要环绕与淀山湖连通的近3平方公里大莲湖设置，生态环境极佳。另外还有一片生长在水泊中的衫林作为旅游特色。
             </div>
           </div>
           <div class="swiper-slide">
             <div class="img-list">
-              <img src="../../assets/image/img/qx1.jpg" alt="" />
+              <img src="../../assets/image/img/jz1.jpg" alt="" />
             </div>
             <div class="content">
-              金泽镇位于上海市青浦境域西南，是江、
-              浙两省进入上海的西大门，也是上海唯一与江
-              苏省和浙江省交界的镇。金泽全镇总面积
-              108.42平方公里。金泽镇有市级非物质文化遗
-              产“商榻宣卷”和“商榻阿婆茶”。每逢农历三月
-              二十八和九月初九的庙会是金泽的特色民俗风 情。
+              金泽镇位于上海市青浦境域西南，是江、浙两省进入上海的西大门，也是上海唯一与江苏省和浙江省交界的镇。金泽全镇总面积108.42平方公里。金泽镇有市级非物质文化遗产“商榻宣卷”和“商榻阿婆茶”。每逢农历三月二十八和九月初九的庙会是金泽的特色民俗风情。
             </div>
           </div>
           <div class="swiper-slide">
             <div class="img-list">
-              <img src="../../assets/image/img/qx1.jpg" alt="" />
+              <img src="../../assets/image/img/ds1.jpg" alt="" />
             </div>
             <div class="content">
-              金泽镇位于上海市青浦境域西南，是江、
-              浙两省进入上海的西大门，也是上海唯一与江
-              苏省和浙江省交界的镇。金泽全镇总面积
-              108.42平方公里。金泽镇有市级非物质文化遗
-              产“商榻宣卷”和“商榻阿婆茶”。每逢农历三月
-              二十八和九月初九的庙会是金泽的特色民俗风 情。
+              春日的淀山湖，明晃晃的阳光洒在水面，所到之处水光潋滟。气势恢宏的彩虹桥像一条明亮的长蛇蜿蜒横跨在淀山湖上。漫步在彩虹桥上，湖面的微风徐徐扑面，让人惬意放松。桥体呈连环s曲线，既像蜿蜒的游龙，又像连绵的缎带，为淀山湖增添了一道亮丽的风景线。
             </div>
           </div>
-        </div> -->
+        </div>
       </div>
 
       <!-- <div class="tit">
@@ -125,6 +111,14 @@ export default {
       mySwiper: null,
       currentTime: 0,
       timeObj: null, // 时间对象,下方会用到
+      // neerImgList: [
+      //   {
+      //     content: '青西郊野公园，座落于青浦西侧的金泽。总规划面积22平方公里，现已建成一期4.6平方公里。与上海其他郊野公园相比，这里景区主要环绕与淀山湖连通的近3平方公里大莲湖设置，生态环境极佳。另外还有一片生长在水泊中的衫林作为旅游特色。',
+      //     imgList: [
+      //       require('../../assets/image/img/qx1.jpg'),
+      //     ]
+      //   }
+      // ]
 
     };
   },
@@ -146,9 +140,13 @@ export default {
   mounted () {
     this.mySwiper = new Swiper('.swiper-container', {
       autoplay: {
-        delay: 1000,
+        delay: 5000,
         stopOnLastSlide: false,
         disableOnInteraction: true
+      },
+      pagination: {
+        el: '.swiper-pagination',
+        clickable: true
       },
       // mousewheel: true,
       loop: true, // 循环模式选项
