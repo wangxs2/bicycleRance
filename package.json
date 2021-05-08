@@ -20,7 +20,7 @@
     "video.js": "^7.11.8",
     "videojs-contrib-hls": "D:\\project\\bicycleRace>\"node\"  \"C:\\Users\\lenovo\\AppData\\Roaming\\npm\\\\node_modules\\npm\\bin\\npm-cli.js\" config get save-prefix \r\n^5.15.0",
     "vue": "^2.6.11",
-    "vue-awesome-mui": "D:\\project\\bicycleRace>\"node\"  \"C:\\Users\\lenovo\\AppData\\Roaming\\npm\\\\node_modules\\npm\\bin\\npm-cli.js\" config get save-prefix \r\n^1.7.3",
+    "vue-awesome-mui": "^1.7.3",
     "vue-awesome-swiper": "^4.1.1",
     "vue-router": "^3.5.1",
     "vuex": "^3.6.2"
