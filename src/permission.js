@@ -23,6 +23,7 @@ router.beforeEach((to, from, next) => {
   NProgress.start() // 进度条开始
 //  console.log(111)
   next()
+  // console.log(next)
 
 
 })

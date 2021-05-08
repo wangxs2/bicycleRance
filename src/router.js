@@ -12,18 +12,19 @@ export default new Router({
   // mode: 'history',
   // base: process.env.BASE_URL,
   routes: [
-    // {
-    //   path: '/c',
-    //   name: 'test',
-    //   component:() =>
-    //   import(/* webpackChunkName: "about" */ './views/test.vue'),
-     
-    // },
+   
     {
       path: '/',
       name: 'layout',
       component: () =>
         import(/* webpackChunkName: "about" */ './views/layout/index.vue'),
+     
+    },
+    {
+      path: '/test',
+      name: 'test',
+      component:() =>
+      import(/* webpackChunkName: "about" */ './views/test.vue'),
      
     },
 

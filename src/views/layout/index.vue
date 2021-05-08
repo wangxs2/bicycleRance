@@ -57,6 +57,7 @@ export default {
     };
   },
   created () {
+    console.log(window.location.href)
     this.getImeis()
     let that = this
     this.timerHeatMap = setInterval(() => {
@@ -67,8 +68,8 @@ export default {
         item.count = 0
       })
       that.allpoint.forEach((item, index) => {
-        that.curDataList.forEach((items, indexs) => {
-          var p1 = [items.lng, items.lat];
+        that.allpoint.forEach((items, indexs) => {
+          var p1 = [items.getExtData().lng, items.getExtData().lat];
           var p2 = [item.getExtData().lng, item.getExtData().lat];
           let distance = AMap.GeometryUtil.distance(p1, p2);
           if (item.getExtData().lng != 0 && item.getExtData.lat != 0 && distance <= 200) {
@@ -187,7 +188,7 @@ export default {
               curInfo.rankNumber = AMap.GeometryUtil.distanceOfLine(curInfo.curMarkerData);
               item.getExtData().lng = objme.lng
               item.getExtData().lat = objme.lat
-              this.curMarkerList = this.curMarkerAllData
+              this.curMarkerList = this.arrDistinctByProp(this.curMarkerAllData,'imei')
               let qcdata=this.arrDistinctByProp(this.curMarkerList,'imei')
               let arr = qcdata.sort(
                 this.createComprisonFunction("rankNumber")
