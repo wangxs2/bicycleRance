@@ -35,6 +35,7 @@ export default {
       passedPolyline: null,
       timer: null, //d定时掉接口
       allpoint: [],
+      headEndCarPoint: [],
       carGroup: new AMap.OverlayGroup(), // 参赛群组
       heatmap: null,
       heatmapData: [],
@@ -44,21 +45,21 @@ export default {
         imei: ""
       },
       websock: null,
-      timerSocket: null,
       timerHeatMap: null,
-
+      headendWebsocke: null,
       curMarkerList: [],
-      curMarkerAllData:[],
+      curMarkerAllData: [],
       linePathList: [],
       curDataList: [],
       curInfoWindow: {},
-      hhh:0,
+      hhh: 0,
+      timerHeadEnd: null
 
     };
   },
   created () {
-    console.log(window.location.href)
     this.getImeis()
+    this.getHeadEndPoint()
     let that = this
     this.timerHeatMap = setInterval(() => {
       if (that.heatmap) {
@@ -81,12 +82,12 @@ export default {
       that.heatmapData = that.cloneObj(that.curDataList)
       that.heatmap.setDataSet({ data: that.heatmapData, min: 1, max: 100 });
     }, 10000);
+
   },
   mounted () {
     this.initmap();
     if (sessionStorage.getItem("isReload")) {
       console.log("页面被刷新");
-      clearInterval(this.timerSocket);
       if (this.websock) {
         this.websock.close(); //离开路由之后断开websocket连接
       }
@@ -111,6 +112,7 @@ export default {
   destroyed () {
     this.websock.close(); //离开路由之后断开websocket连接
     clearInterval(this.timerHeatMap);
+    clearInterval(this.timerHeadEnd);
   },
   methods: {
     getImeis () {
@@ -122,7 +124,7 @@ export default {
           items.curMarkerObj.curMarkerData.push([items.lng, items.lat])
           items.count = 0;
           items.rankNumber = 0;
-          this.allpoint.push(this.setMarker(items));
+          this.allpoint.push(this.setMarker(items, require("./arrow2@3x.png")));
           // this.carGroup.addOverlays(this.allpoint);
           // 计算点位是否在当前路线点200米之内
           this.curDataList.forEach((item, index) => {
@@ -136,83 +138,98 @@ export default {
         })
         this.heatmapData = this.cloneObj(this.curDataList)
         this.heatmap.setDataSet({ data: this.heatmapData, min: 1, max: 100 });
-        let arrw = res.content.slice(0, 10)
+        // let arrw = res.content.slice(0, 10)
 
 
-        this.$store.commit("SET_RANK", arrw);
+        // this.$store.commit("SET_RANK", arrw);
         this.initWebSocket();
       })
     },
+    getHeadEndPoint () {
+      this.$fetchGet('cycling/user/initRtk').then(res => {
+        let headendCar = res.content
+        headendCar.forEach((item, index) => {
+          let img = ''
+          if (item.isHead) {
+            img = require('../../assets/image/head1.png')
+          } else {
+            img = require('../../assets/image/head.png')
+          }
+          this.headEndCarPoint.push(this.setMarker(item, img));
+        })
+
+        this.timerHeadEnd = setInterval(() => {
+          this.initHeadEndWebSocket()
+        }, 3000);
+      })
+    },
     countTime () { },
+    // 赛车手socket
     initWebSocket () {
       //初始化weosocket
-      // const wsuri = "ws://101.231.47.116:50000/cycling/realtime/socket";
-      const wsuri = "ws://192.168.1.100:50000/cycling/realtime/socket";
+      const wsuri = "ws://101.231.47.116:50000/cycling/realtime/socket";
+      // const wsuri = "ws://192.168.1.100:50000/cycling/realtime/socket";
       // const wsuri = "ws://192.168.1.103:8080/cycling/realtime/socket";
       // const wsuri = "ws://10.1.30.202:50000/cycling/realtime/socket";
       this.websock = new WebSocket(wsuri);
       this.websock.onopen = event => {
         console.log("数据已经链接", event);
         this.timerFun()
-        
+
       };
       this.websock.onmessage = res => {
         console.log("接收数据");
-       
+
         // this.curMarkerAllData = []
         // this.curMarkerList = []
         // this.$store.commit("SET_RANK", []);
         let objme = JSON.parse(res.data).content[0];
-        
-        if (objme) {
-          this.allpoint.forEach((item, index) => {
-            item.getExtData().oldLng = item.getExtData().lng
-            item.getExtData().oldLat = item.getExtData().lat
-            if (objme.lng !== 0 && objme.lat !== 0&&objme.imei==item.getExtData().imei ) {
-              if (item.getExtData().curMarkerObj) {
-                this.curMarkerAllData.unshift(item.getExtData().curMarkerObj)
-              }
-              this.allpoint[index].show()
-              this.allpoint[index].setPosition([objme.lng,objme.lat]); //实时更新自行车的位置
-              let curInfo = item.getExtData().curMarkerObj
-              for (let i in curInfo) {
-                for (let z in objme) {
-                  if (i == z) {
-                    curInfo[i] = objme[z]
-                  }
-                }
-              }
-              if (curInfo) {
-                curInfo.curMarkerData.push([objme.lng, objme.lat])
-              }
-              curInfo.rankNumber = AMap.GeometryUtil.distanceOfLine(curInfo.curMarkerData);
-              item.getExtData().lng = objme.lng
-              item.getExtData().lat = objme.lat
-              this.curMarkerList = this.arrDistinctByProp(this.curMarkerAllData,'imei')
-              let qcdata=this.arrDistinctByProp(this.curMarkerList,'imei')
-              let arr = qcdata.sort(
-                this.createComprisonFunction("rankNumber")
-              );
-              
-              this.$store.commit("SET_RANK", arr.slice(0, 10));
-            } else if (objme.lng == 0 && objme.lat == 0 &&objme.imei==item.getExtData().imei) {
-              this.allpoint[index].hide();
 
-              item.getExtData().lng = objme.lng
-              item.getExtData().lat = objme.lat
+        this.allpoint.forEach((item, index) => {
+          // item.getExtData().oldLng = item.getExtData().lng
+          // item.getExtData().oldLat = item.getExtData().lat
+          if (objme.lng !== 0 && objme.lat !== 0 && objme.imei == item.getExtData().imei) {
+            if (item.getExtData().curMarkerObj) {
+              this.curMarkerAllData.unshift(item.getExtData().curMarkerObj)
             }
+            this.allpoint[index].show()
+            this.allpoint[index].setPosition([objme.lng, objme.lat]); //实时更新自行车的位置
+            item.getExtData().lng = objme.lng
+            item.getExtData().lat = objme.lat
+            // let curInfo = item.getExtData().curMarkerObj
+            // for (let i in curInfo) {
+            //   for (let z in objme) {
+            //     if (i == z) {
+            //       curInfo[i] = objme[z]
+            //     }
+            //   }
+            // }
+            // if (curInfo) {
+            //   curInfo.curMarkerData.push([objme.lng, objme.lat])
+            // }
+            // curInfo.rankNumber = AMap.GeometryUtil.distanceOfLine(curInfo.curMarkerData);
+            // this.curMarkerList = this.arrDistinctByProp(this.curMarkerAllData, 'imei')
+            // let qcdata = this.arrDistinctByProp(this.curMarkerList, 'imei')
+            // let arr = qcdata.sort(
+            //   this.createComprisonFunction("rankNumber")
+            // );
 
-          })
+            // this.$store.commit("SET_RANK", arr.slice(0, 10));
+          } else if (objme.lng == 0 && objme.lat == 0 && objme.imei == item.getExtData().imei) {
+            this.allpoint[index].hide();
 
-        }
+            item.getExtData().lng = objme.lng
+            item.getExtData().lat = objme.lat
+          }
+
+        })
+
       };
       this.websock.onerror = e => {
         console.log("链接失败", e);
       };
       this.websock.onclose = e => {
         let that = this
-
-        clearInterval(this.timerSocket);
         console.log("断开连接", e);
         this.websock.close(); //离开路由之后断开websocket连接
         if (e.currentTarget.readyState === 3) {
@@ -220,25 +237,46 @@ export default {
         }
       };
     },
-   arrDistinctByProp(arr,prop){
-            let obj = {};
-            return arr.reduce(function(preValue,item){
-                obj[item[prop]] ? '' : obj[item[prop]] = true && preValue.push(item);
-                return preValue
-            },[])
-    },
-        // 根据name去重
-        
-     
-    timerFun(){
-      //要执行的操作
-      this.allpoint.forEach(item => {
-          this.websock.send('cycling_' + item.getExtData().imei)
+    // 头尾车socket
+    initHeadEndWebSocket () {
+      this.$fetchGet('cycling/user/getRtk').then(res => {
+        res.content.forEach(item => {
+          this.headEndCarPoint.forEach((items, indexs) => {
+            if (item.deviceId == items.deviceId) {
+              this.headEndCarPoint[indexs].setPosition([item.lng, item.lat]); //实时更新自行车的位置
+            }
+          })
         })
-      var timer=setTimeout(()=>{
+
+      })
+    },
+    arrDistinctByProp (arr, prop) {
+      let obj = {};
+      return arr.reduce(function (preValue, item) {
+        obj[item[prop]] ? '' : obj[item[prop]] = true && preValue.push(item);
+        return preValue
+      }, [])
+    },
+    // 根据name去重
+
+    timerFun () {
+      //要执行的操作
+
+      this.allpoint.forEach(item => {
+        this.websock.send('cycling_' + item.getExtData().imei)
+      })
+      var timer = setTimeout(() => {
         this.timerFun()
         clearTimeout(timer)
-      },5000)
+      }, 5000)
+    },
+    timerHeadEndFun () {
+      //要执行的操作
+      this.initHeadEndWebSocket()
+      var timer = setTimeout(() => {
+        this.timerHeadEndFun()
+        clearTimeout(timer)
+      }, 1000)
     },
     heatMap () {
       this.MyMip.plugin(["AMap.HeatMap"], () => {
@@ -246,12 +284,12 @@ export default {
         this.heatmap = new AMap.HeatMap(this.MyMip, {
           radius: 65, //给定半径
           opacity: [0, 0.8],
-          gradient:{
-              0.05: '#006cff',
-              0.15: '#00f0ff',
-              0.2: '#00cc43',
-              0.25: '#f6ff00',
-              0.3: '#fd1704'
+          gradient: {
+            0.05: '#006cff',
+            0.15: '#00f0ff',
+            0.2: '#00cc43',
+            0.25: '#f6ff00',
+            0.3: '#fd1704'
           },
         });
       });
@@ -311,11 +349,11 @@ export default {
       var elem = document.createElement('canvas');
       return !!(elem.getContext && elem.getContext('2d'));
     },
-    setMarker (row) {
+    setMarker (row, img) {
       let marker = new AMap.Marker({
         map: this.MyMip,
         position: [row.lng, row.lat],
-        icon: require("./arrow2@3x.png"),
+        icon: img,
         offset: new AMap.Pixel(-17, -16),
         extData: row
       });

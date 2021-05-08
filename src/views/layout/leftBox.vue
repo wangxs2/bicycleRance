@@ -16,7 +16,22 @@
     
     </div>-->
     <div class="gd-box">
-      <div class="tit">
+      <div class="swiper-container">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide">
+            <div class="img-list">
+              <img src="../../assets/image/img/qx1.jpg" alt="" />
+            </div>
+          </div>
+          <div class="content">
+            青西郊野公园，座落于青浦西侧的金泽。总规划面积22平方公里，现已建成一期4.6平方公里。与上海其他郊野公园相比，这里景区主要环绕与淀山湖连通的近3平方公里大莲湖设置，生态环境极佳。另外还有一片生长在水泊中的衫林作为旅游特色。
+          </div>
+          <div class="swiper-slide">Slide 2</div>
+          <div class="swiper-slide">Slide 3</div>
+        </div>
+      </div>
+
+      <!-- <div class="tit">
         <div class="titl">当前排名</div>
         <div class="titlin"></div>
       </div>
@@ -62,7 +77,7 @@
               </div>
             </div>
        
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -88,8 +103,8 @@ export default {
       handler: function (newVal, oldVal) {
         // TO DO
         console.log(newVal)
-      
-     
+
+
       },
       deep: true,
       immediate: true
@@ -212,7 +227,7 @@ export default {
     .margin(16, 0, 0, 0);
     box-sizing: border-box;
     .padding(0,20,20,20);
-    .tit {
+    .title {
       width: 100%;
       .font-size(24);
       color: #ffffff;
@@ -221,75 +236,101 @@ export default {
       justify-content: center;
       align-items: center;
       .margin(36,0,0,0);
-      .titlin {
-        .vw(30);
-        .vh(4);
-        background: #fff;
-        .margin(10,0,0,0);
-      }
     }
-    .lb-box {
-      flex: 1;
-     
-          .itampaiming {
-            width: 100%;
-            .vh(60);
-            display: flex;
-            justify-content: space-around;
-            .font-size(20);
-            color: #ffffff;
-            background: RGBA(2, 23, 63, 0.6);
-            align-items: center;
-            border-bottom: 1.5px solid RGBA(45, 65, 97, 0.3);
-            .numberimg1 {
-              .vw(30);
-              .vh(30);
-              background: url('../../assets/image/TOP1@3x.png');
-              background-size: 100% 100%;
-            }
-            .numberimg2 {
-              .vw(30);
-              .vh(30);
-              background: url('../../assets/image/TOP2@3x.png');
-              background-size: 100% 100%;
-            }
-            .numberimg3 {
-              .vw(30);
-              .vh(30);
-              background: url('../../assets/image/TOP3@3x.png');
-              background-size: 100% 100%;
-            }
-            .indexname {
-              display: flex;
-              align-items: center;
-              .nawe {
-                .margin(0,0,0,6);
-              }
-            }
-         
-      }
-    }
-    .tab-tit {
+    .content {
       width: 100%;
-      .vh(54);
-      display: flex;
-      .font-size(20);
-      .margin(20,0,0,0);
-      box-sizing: border-box;
-      .padding(8,0,8,0);
+      .font-size(16);
       color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
       align-items: center;
-      background: RGBA(15, 38, 79, 0.8);
-      .tab-tit1 {
-        .vw(180);
-      }
-      .tab-tit2 {
-        flex: 1;
-      }
-      .tab-tit3 {
-        flex: 1;
+      .margin(36,0,0,0);
+      .padding(10,10,10,10);
+    }
+    .img-list {
+      img {
+        .vw(400);
+        .vh(310);
       }
     }
+    // .tit {
+    //   width: 100%;
+    //   .font-size(24);
+    //   color: #ffffff;
+    //   display: flex;
+    //   flex-direction: column;
+    //   justify-content: center;
+    //   align-items: center;
+    //   .margin(36,0,0,0);
+    //   .titlin {
+    //     .vw(30);
+    //     .vh(4);
+    //     background: #fff;
+    //     .margin(10,0,0,0);
+    //   }
+    // }
+    // .lb-box {
+    //   flex: 1;
+
+    //   .itampaiming {
+    //     width: 100%;
+    //     .vh(60);
+    //     display: flex;
+    //     justify-content: space-around;
+    //     .font-size(20);
+    //     color: #ffffff;
+    //     background: RGBA(2, 23, 63, 0.6);
+    //     align-items: center;
+    //     border-bottom: 1.5px solid RGBA(45, 65, 97, 0.3);
+    //     .numberimg1 {
+    //       .vw(30);
+    //       .vh(30);
+    //       background: url('../../assets/image/TOP1@3x.png');
+    //       background-size: 100% 100%;
+    //     }
+    //     .numberimg2 {
+    //       .vw(30);
+    //       .vh(30);
+    //       background: url('../../assets/image/TOP2@3x.png');
+    //       background-size: 100% 100%;
+    //     }
+    //     .numberimg3 {
+    //       .vw(30);
+    //       .vh(30);
+    //       background: url('../../assets/image/TOP3@3x.png');
+    //       background-size: 100% 100%;
+    //     }
+    //     .indexname {
+    //       display: flex;
+    //       align-items: center;
+    //       .nawe {
+    //         .margin(0,0,0,6);
+    //       }
+    //     }
+    //   }
+    // }
+    // .tab-tit {
+    //   width: 100%;
+    //   .vh(54);
+    //   display: flex;
+    //   .font-size(20);
+    //   .margin(20,0,0,0);
+    //   box-sizing: border-box;
+    //   .padding(8,0,8,0);
+    //   color: #ffffff;
+    //   align-items: center;
+    //   background: RGBA(15, 38, 79, 0.8);
+    //   .tab-tit1 {
+    //     .vw(180);
+    //   }
+    //   .tab-tit2 {
+    //     flex: 1;
+    //   }
+    //   .tab-tit3 {
+    //     flex: 1;
+    //   }
+    // }
   }
 }
 </style>
