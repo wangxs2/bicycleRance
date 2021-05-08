@@ -103,7 +103,7 @@ export default {
       let obj = {
         lng: item[0],
         lat: item[1],
-        count: 1
+        count: 0
       }
       this.curDataList.push(obj)
     })
@@ -127,7 +127,7 @@ export default {
           this.allpoint.push(this.setMarker(items, require("./arrow2@3x.png")));
           // this.carGroup.addOverlays(this.allpoint);
           // 计算点位是否在当前路线点200米之内
-          this.curDataList.forEach((item, index) => {
+          this.allpoint.forEach((item, index) => {
             var p1 = [item.lng, item.lat];
             var p2 = [items.lng, items.lat];
             let distance = AMap.GeometryUtil.distance(p1, p2);
@@ -343,7 +343,7 @@ export default {
         });
       });
 
-      this.heatMap()
+      // this.heatMap()
     },
     isSupportCanvas () {
       var elem = document.createElement('canvas');
