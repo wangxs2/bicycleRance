@@ -123,6 +123,7 @@ export default {
         })
       })
       this.heatMap()
+      console.log(qwedata, '6666')
       this.heatmapData = this.cloneObj(qwedata)
       this.heatmap.setDataSet({ data: this.heatmapData, min: 1, max: 100 });
     },
@@ -202,7 +203,6 @@ export default {
         // this.curMarkerAllData = []
         // this.curMarkerList = []
         // this.$store.commit("SET_RANK", []);
-        let objme = JSON.parse(res.data).content[0];
         let rtkData = JSON.parse(res.data).rtk;
         rtkData.forEach((item, index) => {
           this.headEndCarPoint.forEach((items, indexs) => {
@@ -211,43 +211,46 @@ export default {
             }
           })
         })
+        if (JSON.parse(res.data).content && JSON.parse(res.data).content.length > 0) {
 
-        this.allpoint.forEach((item, index) => {
-          if (objme.lng !== 0 && objme.lat !== 0 && objme.imei == item.getExtData().imei) {
-            if (item.getExtData().curMarkerObj) {
-              this.curMarkerAllData.unshift(item.getExtData().curMarkerObj)
+          let objme = JSON.parse(res.data).content[0];
+          this.allpoint.forEach((item, index) => {
+            if (objme.lng !== 0 && objme.lat !== 0 && objme.imei == item.getExtData().imei) {
+              if (item.getExtData().curMarkerObj) {
+                this.curMarkerAllData.unshift(item.getExtData().curMarkerObj)
+              }
+              this.allpoint[index].show()
+              this.allpoint[index].setPosition([objme.lng, objme.lat]); //实时更新自行车的位置
+              item.getExtData().lng = objme.lng
+              item.getExtData().lat = objme.lat
+              // let curInfo = item.getExtData().curMarkerObj
+              // for (let i in curInfo) {
+              //   for (let z in objme) {
+              //     if (i == z) {
+              //       curInfo[i] = objme[z]
+              //     }
+              //   }
+              // }
+              // if (curInfo) {
+              //   curInfo.curMarkerData.push([objme.lng, objme.lat])
+              // }
+              // curInfo.rankNumber = AMap.GeometryUtil.distanceOfLine(curInfo.curMarkerData);
+              // this.curMarkerList = this.arrDistinctByProp(this.curMarkerAllData, 'imei')
+              // let qcdata = this.arrDistinctByProp(this.curMarkerList, 'imei')
+              // let arr = qcdata.sort(
+              //   this.createComprisonFunction("rankNumber")
+              // );
+
+              // this.$store.commit("SET_RANK", arr.slice(0, 10));
+            } else if (objme.lng == 0 && objme.lat == 0 && objme.imei == item.getExtData().imei) {
+              this.allpoint[index].hide();
+              item.getExtData().lng = objme.lng
+              item.getExtData().lat = objme.lat
             }
-            this.allpoint[index].show()
-            this.allpoint[index].setPosition([objme.lng, objme.lat]); //实时更新自行车的位置
-            item.getExtData().lng = objme.lng
-            item.getExtData().lat = objme.lat
-            // let curInfo = item.getExtData().curMarkerObj
-            // for (let i in curInfo) {
-            //   for (let z in objme) {
-            //     if (i == z) {
-            //       curInfo[i] = objme[z]
-            //     }
-            //   }
-            // }
-            // if (curInfo) {
-            //   curInfo.curMarkerData.push([objme.lng, objme.lat])
-            // }
-            // curInfo.rankNumber = AMap.GeometryUtil.distanceOfLine(curInfo.curMarkerData);
-            // this.curMarkerList = this.arrDistinctByProp(this.curMarkerAllData, 'imei')
-            // let qcdata = this.arrDistinctByProp(this.curMarkerList, 'imei')
-            // let arr = qcdata.sort(
-            //   this.createComprisonFunction("rankNumber")
-            // );
 
-            // this.$store.commit("SET_RANK", arr.slice(0, 10));
-          } else if (objme.lng == 0 && objme.lat == 0 && objme.imei == item.getExtData().imei) {
-            this.allpoint[index].hide();
-            item.getExtData().lng = objme.lng
-            item.getExtData().lat = objme.lat
-          }
+          })
 
-        })
-
+        }
       };
       this.websock.onerror = e => {
         console.log("链接失败", e);
@@ -309,16 +312,14 @@ export default {
         //初始化heatmap对象
         this.heatmap = new AMap.HeatMap(this.MyMip, {
           radius: 25, //给定半径
-          opacity: [0, 0.8],
+          opacity: [0.1, 1],
           gradient: {
-            // 0.05: '#006cff',
-            // 0.15: '#00f0ff',
-            // 0.2: '#00cc43',
-            // 0.25: '#f6ff00',
-            // 0.3: '#fd1704'
-
-            0.5: 'blue',
-            0.65: 'rgb(117,211,248)',
+            0.05: '#006cff',
+            0.15: '#00f0ff',
+            0.2: '#00cc43',
+            0.25: '#f6ff00',
+            // 0.3: '#fd1704',
+            0.4: 'rgb(117,211,248)',
             0.7: 'rgb(0, 255, 0)',
             0.9: '#ffea00',
             1.0: 'red'
