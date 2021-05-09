@@ -65,9 +65,6 @@ export default {
       if (that.heatmap) {
         that.heatmap.setMap(null)
       }
-      that.curDataList.forEach(item => {
-        item.count = 0
-      })
       let qwedata = []
       that.allpoint.forEach((item, index) => {
         qwedata.push(
