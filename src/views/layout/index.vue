@@ -177,9 +177,9 @@ export default {
           this.headEndCarPoint.push(this.setMarker1(item, img));
         })
 
-        this.timerHeadEnd = setInterval(() => {
-          this.initHeadEndWebSocket()
-        }, 3000);
+        // this.timerHeadEnd = setInterval(() => {
+        //   this.initHeadEndWebSocket()
+        // }, 3000);
       })
     },
     countTime () { },
@@ -203,6 +203,15 @@ export default {
         // this.curMarkerList = []
         // this.$store.commit("SET_RANK", []);
         let objme = JSON.parse(res.data).content[0];
+        let rtkData = JSON.parse(res.data).rtk;
+        rtkData.forEach((item, index) => {
+          this.headEndCarPoint.forEach((items, indexs) => {
+            if (item.deviceId == items.getExtData().deviceId) {
+              this.headEndCarPoint[indexs].setPosition([item.lng, item.lat]);
+            }
+          })
+        })
+
         this.allpoint.forEach((item, index) => {
           if (objme.lng !== 0 && objme.lat !== 0 && objme.imei == item.getExtData().imei) {
             if (item.getExtData().curMarkerObj) {
@@ -287,14 +296,14 @@ export default {
         clearTimeout(timer)
       }, 5000)
     },
-    // timerHeadEndFun () {
-    //   //要执行的操作
-    //   this.initHeadEndWebSocket()
-    //   var timer = setTimeout(() => {
-    //     this.timerHeadEndFun()
-    //     clearTimeout(timer)
-    //   }, 1000)
-    // },
+    timerHeadEndFun () {
+      //要执行的操作
+      // this.initHeadEndWebSocket()
+      var timer = setTimeout(() => {
+        this.timerHeadEndFun()
+        clearTimeout(timer)
+      }, 1000)
+    },
     heatMap () {
       this.MyMip.plugin(["AMap.HeatMap"], () => {
         //初始化heatmap对象

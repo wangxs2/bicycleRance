@@ -291,10 +291,11 @@ export default {
     }
     .el-carousel2 {
       .vw(400);
-      .vh(630);
+      .vh(650);
+      background: rgba(6, 69, 161, 0.2);
       .el-carousel-item2 {
         .vw(400);
-        .vh(630);
+        .vh(650);
         .el-carousel1 {
           .vw(400);
           .vh(360);
