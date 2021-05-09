@@ -171,7 +171,7 @@ export default {
           } else {
             img = require('../../assets/image/head.png')
           }
-          this.headEndCarPoint.push(this.setMarker(item, img));
+          this.headEndCarPoint.push(this.setMarker1(item, img));
         })
 
         this.timerHeadEnd = setInterval(() => {
@@ -370,7 +370,20 @@ export default {
         map: this.MyMip,
         position: [row.lng, row.lat],
         icon: img,
-        offset: new AMap.Pixel(-17, -16),
+        offset: new AMap.Pixel(-22, -28),
+        extData: row
+      });
+      marker.on('click', e => {
+        this.curInfoWindow = e.target.getExtData()
+      })
+      return marker;
+    },
+    setMarker1 (row, img) {
+      let marker = new AMap.Marker({
+        map: this.MyMip,
+        position: [row.lng, row.lat],
+        icon: img,
+        offset: new AMap.Pixel(-42, -56),
         extData: row
       });
       marker.on('click', e => {
