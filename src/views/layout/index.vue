@@ -233,7 +233,6 @@ export default {
             // this.$store.commit("SET_RANK", arr.slice(0, 10));
           } else if (objme.lng == 0 && objme.lat == 0 && objme.imei == item.getExtData().imei) {
             this.allpoint[index].hide();
-
             item.getExtData().lng = objme.lng
             item.getExtData().lat = objme.lat
           }
