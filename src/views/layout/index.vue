@@ -68,15 +68,15 @@ export default {
       that.curDataList.forEach(item => {
         item.count = 0
       })
-      let qwedata=[]
+      let qwedata = []
       that.allpoint.forEach((item, index) => {
-           qwedata.push(
-           {
-            lng:item.getExtData().lng,
+        qwedata.push(
+          {
+            lng: item.getExtData().lng,
             lat: item.getExtData().lat,
             count: 0
-            }
-          )
+          }
+        )
         that.allpoint.forEach((items, indexs) => {
           var p1 = [items.getExtData().lng, items.getExtData().lat];
           var p2 = [item.getExtData().lng, item.getExtData().lat];
@@ -130,17 +130,17 @@ export default {
           items.curMarkerObj = items
           items.curMarkerObj.curMarkerData = []
           arpoly.push(
-           {
-            lng:items.lng,
-            lat: items.lat,
-            count: 0
+            {
+              lng: items.lng,
+              lat: items.lat,
+              count: 0
             }
           )
           items.rankNumber = 0;
           this.allpoint.push(this.setMarker(items, require("./arrow2@3x.png")));
           // this.carGroup.addOverlays(this.allpoint);
           // 计算点位是否在当前路线点200米之内
-          
+
           this.allpoint.forEach((item, index) => {
             var p1 = [item.lng, item.lat];
             var p2 = [items.lng, items.lat];
@@ -148,7 +148,7 @@ export default {
             if (distance <= 200) {
               arpoly[index].count = arpoly[index].count + 1
             }
-         
+
           })
         })
         this.heatmapData = this.cloneObj(arpoly)
@@ -171,7 +171,7 @@ export default {
           } else {
             img = require('../../assets/image/head.png')
           }
-          this.headEndCarPoint.push(this.setMarker(item, img));
+          this.headEndCarPoint.push(this.setMarker1(item, img));
         })
 
         this.timerHeadEnd = setInterval(() => {
@@ -183,10 +183,10 @@ export default {
     // 赛车手socket
     initWebSocket () {
       //初始化weosocket
-      // const wsuri = "ws://101.231.47.116:50000/cycling/realtime/socket";
+      const wsuri = "ws://101.231.47.116:50000/cycling/realtime/socket";
       // const wsuri = "ws://192.168.1.100:50000/cycling/realtime/socket";
       // const wsuri = "ws://192.168.1.103:8080/cycling/realtime/socket";
-      const wsuri = "ws://10.1.30.202:50000/cycling/realtime/socket";
+      // const wsuri = "ws://10.1.30.202:50000/cycling/realtime/socket";
       this.websock = new WebSocket(wsuri);
       this.websock.onopen = event => {
         console.log("数据已经链接", event);
@@ -255,10 +255,10 @@ export default {
     // 头尾车socket
     initHeadEndWebSocket () {
       this.$fetchGet('cycling/user/getRtk').then(res => {
-        res.content.forEach(item => {
+        res.content.forEach((item, index) => {
           this.headEndCarPoint.forEach((items, indexs) => {
-            if (item.deviceId == items.deviceId) {
-              this.headEndCarPoint[indexs].setPosition([item.lng, item.lat]); //实时更新自行车的位置
+            if (item.deviceId == items.getExtData().deviceId) {
+              this.headEndCarPoint[indexs].setPosition([item.lng, item.lat]);
             }
           })
         })
@@ -326,13 +326,13 @@ export default {
       let mypath = linePath.linePath
       let markerq = new AMap.Marker({
         icon: require("../../assets/image/qw.png"),
-        position: [120.99097658022741,31.053094606485807],
+        position: [120.99097658022741, 31.053094606485807],
         offset: new AMap.Pixel(-40, -45)
       });
       markerq.setMap(this.MyMip);
       let markerz = new AMap.Marker({
         icon: require("../../assets/image/dx.png"),
-        position: [121.00969149291379,31.07313499174208],
+        position: [121.00969149291379, 31.07313499174208],
         offset: new AMap.Pixel(-40, -40)
       });
       markerz.setMap(this.MyMip);
@@ -369,7 +369,20 @@ export default {
         map: this.MyMip,
         position: [row.lng, row.lat],
         icon: img,
-        offset: new AMap.Pixel(-17, -16),
+        offset: new AMap.Pixel(-22, -28),
+        extData: row
+      });
+      marker.on('click', e => {
+        this.curInfoWindow = e.target.getExtData()
+      })
+      return marker;
+    },
+    setMarker1 (row, img) {
+      let marker = new AMap.Marker({
+        map: this.MyMip,
+        position: [row.lng, row.lat],
+        icon: img,
+        offset: new AMap.Pixel(-42, -56),
         extData: row
       });
       marker.on('click', e => {
