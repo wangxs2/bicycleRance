@@ -1,6 +1,8 @@
 <template>
   <div class="submit-page">
-    <div class="title">长三角公安自行测赛选手注册系统</div>
+    <div class="title">
+      2021首届“英宇杯”上海公安自行车公路邀请赛定位设备登录系统
+    </div>
 
     <div class="input-from">
       <van-form @submit="onSubmit" @failed="onFailed">
@@ -134,13 +136,14 @@ export default {
 <style lang="scss">
 .submit-page {
   .title {
-    font-size: 20px;
+    font-size: 16px;
+    line-height: 30px;
     color: #fff;
     font-weight: 600;
     font-family: YaHei;
     text-align: center;
     background: rgb(30, 90, 155);
-    padding: 10px 0;
+    padding: 10px 10px;
     border-bottom: 2px solid rgb(236, 238, 238);
   }
   .input-from {
