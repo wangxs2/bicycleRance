@@ -16,7 +16,7 @@ module.exports = {
       '/cycling/*': {
         // target: 'http://10.1.4.175:8001/traffic-investment',
         // target: 'http://10.1.30.202:50000/cycling',
-        // target: 'http://101.231.47.116:50000/cycling',
+        target: 'http://101.231.47.116:50000/cycling',
         // target: 'http://192.168.1.106:8080/cycling',
         // target: 'http://192.168.1.111:50000/cycling',
         changeOrigin: true,
