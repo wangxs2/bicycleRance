@@ -1,7 +1,8 @@
 <template>
   <div class="submit-page">
     <div class="title">
-      2021首届“英宇杯”上海公安自行车公路邀请赛定位设备登录系统
+      <span>2021首届“英宇杯”上海公安自行车公路邀请赛</span>
+      <span>定位设备登录系统</span>
     </div>
 
     <div class="input-from">
@@ -38,6 +39,7 @@
         <div
           v-if="submitBtn"
           style="
+            width: 100%;
             display: flex;
             justify-content: center;
             position: fixed;
@@ -52,7 +54,10 @@
         </div>
       </van-form>
     </div>
-
+    <div class="img-logo">
+      <!-- <img src="../assets/image/scimg.jpg" alt="" class="img" /> -->
+      <img src="../assets/image/1kvk.png" alt="" class="logo" />
+    </div>
     <!-- 监管人员选择弹框 -->
     <van-dialog
       v-model="layoutShow"
@@ -136,6 +141,8 @@ export default {
 <style lang="scss">
 .submit-page {
   .title {
+    display: flex;
+    flex-direction: column;
     font-size: 16px;
     line-height: 30px;
     color: #fff;
@@ -147,9 +154,10 @@ export default {
     border-bottom: 2px solid rgb(236, 238, 238);
   }
   .input-from {
-    padding: 18px;
+    padding: 18px 0;
     .input-wrapper1 {
       margin-top: 12px;
+      padding: 0 18px;
       .label {
         font-size: 16px;
         margin-bottom: 10px;
@@ -163,6 +171,23 @@ export default {
         border: 2px solid rgb(236, 238, 238);
       }
     }
+  }
+  .img-logo {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    .img {
+      width: 100%;
+      height: 220px;
+    }
+    .logo {
+      width: 57%;
+      height: 60px;
+      margin: 0 auto;
+      margin-top: 20px;
+    }
+    padding-bottom: 90px;
   }
   .van-button--info {
     background: rgb(30, 90, 155);
