@@ -5,7 +5,7 @@
       <iframe
         class="video-js-box"
         style="width: 95.8%; height: 93%"
-        src="http://liveshare.huya.com/iframe/52724"
+        src="http://liveshare.huya.com/iframe/18566248"
       ></iframe>
       <!-- </div> -->
       <!-- <div class="video-js-box">

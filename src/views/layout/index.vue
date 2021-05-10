@@ -110,7 +110,7 @@ export default {
           {
             lng: item.getExtData().lng,
             lat: item.getExtData().lat,
-            count: 1
+            count: 0
           }
         )
         this.allpoint.forEach((items, indexs) => {
@@ -312,7 +312,7 @@ export default {
         //初始化heatmap对象
         this.heatmap = new AMap.HeatMap(this.MyMip, {
           radius: 25, //给定半径
-          opacity: [0.1, 1],
+          opacity: [0, 1],
           gradient: {
             0.05: '#006cff',
             0.15: '#00f0ff',
