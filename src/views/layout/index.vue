@@ -60,7 +60,6 @@ export default {
   created () {
     this.getImeis()
     this.getHeadEndPoint()
-
   },
   mounted () {
     this.initmap();
