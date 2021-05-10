@@ -26,5 +26,10 @@ body,
   margin: 0;
   padding: 0;
   font-size: 0.16rem;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  -khtml-user-select: none;
+  user-select: none;
 }
 </style>

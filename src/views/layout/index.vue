@@ -60,34 +60,6 @@ export default {
   created () {
     this.getImeis()
     this.getHeadEndPoint()
-    let that = this
-    this.timerHeatMap = setInterval(() => {
-      if (that.heatmap) {
-        that.heatmap.setMap(null)
-      }
-      let qwedata = []
-      that.allpoint.forEach((item, index) => {
-        qwedata.push(
-          {
-            lng: item.getExtData().lng,
-            lat: item.getExtData().lat,
-            count: 0
-          }
-        )
-        that.allpoint.forEach((items, indexs) => {
-          var p1 = [items.getExtData().lng, items.getExtData().lat];
-          var p2 = [item.getExtData().lng, item.getExtData().lat];
-          let distance = AMap.GeometryUtil.distance(p1, p2);
-          if (item.getExtData().lng != 0 && item.getExtData.lat != 0 && distance <= 200) {
-            qwedata[index].count = qwedata[index].count + 1
-          }
-        })
-      })
-      that.heatMap()
-      that.heatmapData = that.cloneObj(qwedata)
-      that.heatmap.setDataSet({ data: that.heatmapData, min: 1, max: 100 });
-    }, 10000);
-
   },
   mounted () {
     this.initmap();
@@ -120,6 +92,40 @@ export default {
     clearInterval(this.timerHeadEnd);
   },
   methods: {
+    setHeatmap () {
+
+      // let that = this
+      // this.timerHeatMap = setInterval(() => {
+      // }, 5000);
+      if (this.heatmap) {
+        this.heatmap.setMap(null)
+      }
+      this.curDataList.forEach(item => {
+        item.count = 0
+      })
+      let qwedata = []
+      this.allpoint.forEach((item, index) => {
+        qwedata.push(
+          {
+            lng: item.getExtData().lng,
+            lat: item.getExtData().lat,
+            count: 0
+          }
+        )
+        this.allpoint.forEach((items, indexs) => {
+          var p1 = [items.getExtData().lng, items.getExtData().lat];
+          var p2 = [item.getExtData().lng, item.getExtData().lat];
+          let distance = AMap.GeometryUtil.distance(p1, p2);
+          if (item.getExtData().lng != 0 && item.getExtData.lat != 0 && distance <= 200) {
+            qwedata[index].count = qwedata[index].count + 1
+          }
+        })
+      })
+      this.heatMap()
+      console.log(qwedata, '6666')
+      this.heatmapData = this.cloneObj(qwedata)
+      this.heatmap.setDataSet({ data: this.heatmapData, min: 1, max: 100 });
+    },
     getImeis () {
       let arpoly = [];
       this.$fetchGet('/cycling/user/getImeis').then(res => {
@@ -139,7 +145,7 @@ export default {
           // 计算点位是否在当前路线点200米之内
 
           this.allpoint.forEach((item, index) => {
-            var p1 = [item.lng, item.lat];
+            var p1 = [item.getExtData().lng, item.getExtData().lat];
             var p2 = [items.lng, items.lat];
             let distance = AMap.GeometryUtil.distance(p1, p2);
             if (distance <= 200) {
@@ -171,9 +177,9 @@ export default {
           this.headEndCarPoint.push(this.setMarker1(item, img));
         })
 
-        this.timerHeadEnd = setInterval(() => {
-          this.initHeadEndWebSocket()
-        }, 3000);
+        // this.timerHeadEnd = setInterval(() => {
+        //   this.initHeadEndWebSocket()
+        // }, 3000);
       })
     },
     countTime () { },
@@ -196,46 +202,54 @@ export default {
         // this.curMarkerAllData = []
         // this.curMarkerList = []
         // this.$store.commit("SET_RANK", []);
-        let objme = JSON.parse(res.data).content[0];
-
-        this.allpoint.forEach((item, index) => {
-          // item.getExtData().oldLng = item.getExtData().lng
-          // item.getExtData().oldLat = item.getExtData().lat
-          if (objme.lng !== 0 && objme.lat !== 0 && objme.imei == item.getExtData().imei) {
-            if (item.getExtData().curMarkerObj) {
-              this.curMarkerAllData.unshift(item.getExtData().curMarkerObj)
+        let rtkData = JSON.parse(res.data).rtk;
+        rtkData.forEach((item, index) => {
+          this.headEndCarPoint.forEach((items, indexs) => {
+            if (item.deviceId == items.getExtData().deviceId) {
+              this.headEndCarPoint[indexs].setPosition([item.lng, item.lat]);
             }
-            this.allpoint[index].show()
-            this.allpoint[index].setPosition([objme.lng, objme.lat]); //实时更新自行车的位置
-            item.getExtData().lng = objme.lng
-            item.getExtData().lat = objme.lat
-            // let curInfo = item.getExtData().curMarkerObj
-            // for (let i in curInfo) {
-            //   for (let z in objme) {
-            //     if (i == z) {
-            //       curInfo[i] = objme[z]
-            //     }
-            //   }
-            // }
-            // if (curInfo) {
-            //   curInfo.curMarkerData.push([objme.lng, objme.lat])
-            // }
-            // curInfo.rankNumber = AMap.GeometryUtil.distanceOfLine(curInfo.curMarkerData);
-            // this.curMarkerList = this.arrDistinctByProp(this.curMarkerAllData, 'imei')
-            // let qcdata = this.arrDistinctByProp(this.curMarkerList, 'imei')
-            // let arr = qcdata.sort(
-            //   this.createComprisonFunction("rankNumber")
-            // );
-
-            // this.$store.commit("SET_RANK", arr.slice(0, 10));
-          } else if (objme.lng == 0 && objme.lat == 0 && objme.imei == item.getExtData().imei) {
-            this.allpoint[index].hide();
-            item.getExtData().lng = objme.lng
-            item.getExtData().lat = objme.lat
-          }
-
+          })
         })
+        if (JSON.parse(res.data).content && JSON.parse(res.data).content.length > 0) {
 
+          let objme = JSON.parse(res.data).content[0];
+          this.allpoint.forEach((item, index) => {
+            if (objme.lng !== 0 && objme.lat !== 0 && objme.imei == item.getExtData().imei) {
+              if (item.getExtData().curMarkerObj) {
+                this.curMarkerAllData.unshift(item.getExtData().curMarkerObj)
+              }
+              this.allpoint[index].show()
+              this.allpoint[index].setPosition([objme.lng, objme.lat]); //实时更新自行车的位置
+              item.getExtData().lng = objme.lng
+              item.getExtData().lat = objme.lat
+              // let curInfo = item.getExtData().curMarkerObj
+              // for (let i in curInfo) {
+              //   for (let z in objme) {
+              //     if (i == z) {
+              //       curInfo[i] = objme[z]
+              //     }
+              //   }
+              // }
+              // if (curInfo) {
+              //   curInfo.curMarkerData.push([objme.lng, objme.lat])
+              // }
+              // curInfo.rankNumber = AMap.GeometryUtil.distanceOfLine(curInfo.curMarkerData);
+              // this.curMarkerList = this.arrDistinctByProp(this.curMarkerAllData, 'imei')
+              // let qcdata = this.arrDistinctByProp(this.curMarkerList, 'imei')
+              // let arr = qcdata.sort(
+              //   this.createComprisonFunction("rankNumber")
+              // );
+
+              // this.$store.commit("SET_RANK", arr.slice(0, 10));
+            } else if (objme.lng == 0 && objme.lat == 0 && objme.imei == item.getExtData().imei) {
+              this.allpoint[index].hide();
+              item.getExtData().lng = objme.lng
+              item.getExtData().lat = objme.lat
+            }
+
+          })
+
+        }
       };
       this.websock.onerror = e => {
         console.log("链接失败", e);
@@ -277,14 +291,16 @@ export default {
       this.allpoint.forEach(item => {
         this.websock.send('cycling_' + item.getExtData().imei)
       })
+      // this.websock.send('rtk')
       var timer = setTimeout(() => {
         this.timerFun()
+        this.setHeatmap()
         clearTimeout(timer)
       }, 5000)
     },
     timerHeadEndFun () {
       //要执行的操作
-      this.initHeadEndWebSocket()
+      // this.initHeadEndWebSocket()
       var timer = setTimeout(() => {
         this.timerHeadEndFun()
         clearTimeout(timer)
@@ -294,14 +310,18 @@ export default {
       this.MyMip.plugin(["AMap.HeatMap"], () => {
         //初始化heatmap对象
         this.heatmap = new AMap.HeatMap(this.MyMip, {
-          radius: 20, //给定半径
-          opacity: [0, 0.8],
+          radius: 25, //给定半径
+          opacity: [0, 1],
           gradient: {
             0.05: '#006cff',
             0.15: '#00f0ff',
             0.2: '#00cc43',
             0.25: '#f6ff00',
-            0.3: '#fd1704'
+            // 0.3: '#fd1704',
+            0.4: 'rgb(117,211,248)',
+            0.7: 'rgb(0, 255, 0)',
+            0.9: '#ffea00',
+            1.0: 'red'
           },
         });
       });
@@ -348,6 +368,9 @@ export default {
         outlineColor: "#FF0ABBC5",
         isOutline: true
       });
+      this.MyMip.on('click', (e) => {
+        console.log(e.lnglat.getLng(), e.lnglat.getLat(), '333333333333333')
+      })
       AMap.plugin("AMap.Weather", () => {
         var weather = new AMap.Weather();
         weather.getLive("青浦区", (err, data) => {

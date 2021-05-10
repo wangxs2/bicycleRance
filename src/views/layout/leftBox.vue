@@ -25,7 +25,7 @@
       <el-carousel
         class="el-carousel2"
         indicator-position="none"
-        :interval="4000"
+        :interval="16000"
         arrow="never"
       >
         <el-carousel-item
@@ -33,7 +33,7 @@
           v-for="(item, index) in neerImgList"
           :key="index"
         >
-          <el-carousel :interval="1000" class="el-carousel1" arrow="never">
+          <el-carousel :interval="4000" class="el-carousel1" arrow="never">
             <el-carousel-item
               class="el-carousel-item1"
               v-for="(items, indexs) in item.imgList"
@@ -201,6 +201,10 @@ export default {
 </script>
 
 <style lang="less" >
+@font-face {
+  font-family: 'wgsFont';
+  src: url('../../assets/font/DS-DIGIB.TTF') format('truetype'); /* Safari, Android, iOS */
+}
 .left-container {
   width: 100%;
   height: 100%;
@@ -215,11 +219,11 @@ export default {
     align-items: center;
     .vw(440);
     .vh(150);
-    .font-size(60);
+    .font-size(70);
     color: #ffffff;
     background: url('../../assets/image/k1@3x.png');
     background-size: 100% 100%;
-    font-family: DS-Digital;
+    font-family: 'wgsFont';
     font-weight: bold;
     .padding(0, 50, 0, 50);
     // img {
@@ -287,10 +291,11 @@ export default {
     }
     .el-carousel2 {
       .vw(400);
-      .vh(630);
+      .vh(650);
+      background: rgba(6, 69, 161, 0.2);
       .el-carousel-item2 {
         .vw(400);
-        .vh(630);
+        .vh(650);
         .el-carousel1 {
           .vw(400);
           .vh(360);

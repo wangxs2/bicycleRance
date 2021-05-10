@@ -1,10 +1,13 @@
 <template>
   <div class="right-container">
     <div class="videobox">
+      <!-- <div class="video-js-box"> -->
       <iframe
-        style="width: 90%; height: 90%"
-        src="http://liveshare.huya.com/iframe/52724"
+        class="video-js-box"
+        style="width: 95.8%; height: 93%"
+        src="http://liveshare.huya.com/iframe/18566248"
       ></iframe>
+      <!-- </div> -->
       <!-- <div class="video-js-box">
         <video
           id="my-video"
@@ -93,9 +96,17 @@ export default {
     align-items: center;
     background: url('../../assets/image/k4@3x.png');
     background-size: 100% 100%;
+    iframe {
+      border: none;
+    }
     .video-js-box {
       width: 95.8%;
       height: 93%;
+      &iframe {
+        border: none;
+        width: 95.8%;
+        height: 93%;
+      }
       // z-index: -1;
       .margin (0, 0, 0, 0);
       -webkit-clip-path: polygon(
