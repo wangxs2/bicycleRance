@@ -180,10 +180,10 @@ export default {
     // 赛车手socket
     initWebSocket () {
       //初始化weosocket
-      const wsuri = "ws://101.231.47.116:50000/cycling/realtime/socket";
+      // const wsuri = "ws://101.231.47.116:50000/cycling/realtime/socket";
       // const wsuri = "ws://192.168.1.100:50000/cycling/realtime/socket";
       // const wsuri = "ws://192.168.1.103:8080/cycling/realtime/socket";
-      // const wsuri = "ws://10.1.30.202:50000/cycling/realtime/socket";
+      const wsuri = "ws://10.1.30.202:50000/cycling/realtime/socket";
       this.websock = new WebSocket(wsuri);
       this.websock.onopen = event => {
         console.log("数据已经链接", event);
