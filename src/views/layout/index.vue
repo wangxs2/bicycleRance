@@ -355,13 +355,13 @@ export default {
       let markerq = new AMap.Marker({
         icon: require("../../assets/image/qw.png"),
         position: [120.99097658022741, 31.053094606485807],
-        offset: new AMap.Pixel(-40, -45)
+        offset: new AMap.Pixel(-28, -33)
       });
       markerq.setMap(this.MyMip);
       let markerz = new AMap.Marker({
         icon: require("../../assets/image/dx.png"),
         position: [121.00969149291379, 31.07313499174208],
-        offset: new AMap.Pixel(-40, -40)
+        offset: new AMap.Pixel(-28, -33)
       });
       markerz.setMap(this.MyMip);
       let wdata = this.separateArr(mypath, 2);
@@ -413,7 +413,7 @@ export default {
         map: this.MyMip,
         position: [row.lng, row.lat],
         icon: img,
-        offset: new AMap.Pixel(-36, -42),
+        offset: new AMap.Pixel(-49, -59),
         extData: row
       });
       marker.on('click', e => {
