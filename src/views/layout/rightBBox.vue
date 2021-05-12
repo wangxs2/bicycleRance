@@ -2,16 +2,16 @@
   <div class="right-container">
     <div class="videobox">
       <!-- <div class="video-js-box"> -->
-      <!-- <iframe
-        class="video-js-box"
-        style="width: 95.8%; height: 93%"
-        src="http://liveshare.huya.com/iframe/18566248"
-      ></iframe> -->
       <iframe
         class="video-js-box"
         style="width: 95.8%; height: 93%"
-        src="http://liveshare.huya.com/iframe/24712873"
+        src="http://liveshare.huya.com/iframe/18566248"
       ></iframe>
+      <!-- <iframe
+        class="video-js-box"
+        style="width: 95.8%; height: 93%"
+        src="http://liveshare.huya.com/iframe/24712873"
+      ></iframe> -->
 
       <!-- </div> -->
       <!-- <div class="video-js-box">
