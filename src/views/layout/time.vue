@@ -6,7 +6,7 @@
       :defaultVal="defaultVal"
       >{{ countString }}</span
     >
-<!-- 
+    <!-- 
        120.991449, 31.05981,
    120.991416,31.058287,
    120.99133,31.055953,
@@ -229,7 +229,7 @@ export default {
     countDown () {
       const that = this;
       //设置截止时间
-      let outTime = "2021-05-16 13:00:00"
+      let outTime = "2021-05-16 13:30:00"
       // let outTime = "2021-05-16 13:00:00"
       let endDate = new Date(outTime).getTime();
       let timeID = setInterval(function () {

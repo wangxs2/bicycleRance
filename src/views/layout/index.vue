@@ -13,7 +13,7 @@
       <righttbox></righttbox>
     </div>
     <div class="right-b-box">
-      <rightbbox></rightbbox>
+      <leftbbox></leftbbox>
     </div>
   </div>
 </template>
@@ -21,13 +21,13 @@
 <script>
 import leftbox from "./leftBox.vue";
 import righttbox from "./rightTBox.vue";
-import rightbbox from "./rightBBox.vue";
+import leftbbox from "./leftBBbox.vue";
 import linePath from './linePath'
 export default {
   components: {
     leftbox,
     righttbox,
-    rightbbox
+    leftbbox
   },
   data () {
     return {
@@ -169,7 +169,7 @@ export default {
         headendCar.forEach((item, index) => {
           let img = ''
           if (item.isHead) {
-            img = require('../../assets/image/head3.png')
+            img = require('../../assets/image/head4.png')
           } else {
             img = require('../../assets/image/head2.png')
           }
