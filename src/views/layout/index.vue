@@ -363,7 +363,7 @@ export default {
         strokeWeight: 0,
         strokeOpacity: 0.5,
         outlineColor: "yellow",
-        borderWeight: 9,
+        borderWeight:4,
         lineJoin: "round",
         outlineColor: "#FF0ABBC5",
         isOutline: true

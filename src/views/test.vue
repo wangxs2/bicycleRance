@@ -20,8 +20,6 @@
     </div>
   </div>
 </template>
-
- 
 <script>
 import Vue from 'vue'
 import Mui from 'vue-awesome-mui'
