@@ -7,6 +7,12 @@
         style="width: 95.8%; height: 93%"
         src="http://liveshare.huya.com/iframe/18566248"
       ></iframe>
+      <!-- <iframe
+        class="video-js-box"
+        style="width: 95.8%; height: 93%"
+        src="http://liveshare.huya.com/iframe/24712873"
+      ></iframe> -->
+
       <!-- </div> -->
       <!-- <div class="video-js-box">
         <video
@@ -88,14 +94,15 @@ export default {
     align-items: center;
     position: absolute;
     .left(0);
-    .bottom(90);
-    .vw(440);
-    .vh(280);
+    // .bottom(90);
+    .vw(600);
+    .vh(500);
     display: flex;
     justify-content: center;
     align-items: center;
     background: url('../../assets/image/k4@3x.png');
     background-size: 100% 100%;
+    .margin(130,0 ,0, 0);
     iframe {
       border: none;
     }

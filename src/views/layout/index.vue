@@ -13,7 +13,7 @@
       <righttbox></righttbox>
     </div>
     <div class="right-b-box">
-      <rightbbox></rightbbox>
+      <leftbbox></leftbbox>
     </div>
   </div>
 </template>
@@ -21,13 +21,13 @@
 <script>
 import leftbox from "./leftBox.vue";
 import righttbox from "./rightTBox.vue";
-import rightbbox from "./rightBBox.vue";
+import leftbbox from "./leftBBbox.vue";
 import linePath from './linePath'
 export default {
   components: {
     leftbox,
     righttbox,
-    rightbbox
+    leftbbox
   },
   data () {
     return {
@@ -122,7 +122,6 @@ export default {
         })
       })
       this.heatMap()
-      console.log(qwedata, '6666')
       this.heatmapData = this.cloneObj(qwedata)
       this.heatmap.setDataSet({ data: this.heatmapData, min: 1, max: 100 });
     },
@@ -152,10 +151,10 @@ export default {
               arpoly[index].count = arpoly[index].count + 1
             }
 
+            this.allpoint[index].hide();
           })
         })
         this.heatmapData = this.cloneObj(arpoly)
-        console.log(arpoly)
         this.heatmap.setDataSet({ data: this.heatmapData, min: 1, max: 100 });
         // let arrw = res.content.slice(0, 10)
 
@@ -170,9 +169,9 @@ export default {
         headendCar.forEach((item, index) => {
           let img = ''
           if (item.isHead) {
-            img = require('../../assets/image/head1.png')
+            img = require('../../assets/image/head4.png')
           } else {
-            img = require('../../assets/image/head.png')
+            img = require('../../assets/image/head2.png')
           }
           this.headEndCarPoint.push(this.setMarker1(item, img));
         })
@@ -186,10 +185,10 @@ export default {
     // 赛车手socket
     initWebSocket () {
       //初始化weosocket
-      // const wsuri = "ws://101.231.47.116:50000/cycling/realtime/socket";
+      const wsuri = "ws://101.231.47.116:50000/cycling/realtime/socket";
       // const wsuri = "ws://192.168.1.100:50000/cycling/realtime/socket";
       // const wsuri = "ws://192.168.1.103:8080/cycling/realtime/socket";
-      const wsuri = "ws://10.1.30.202:50000/cycling/realtime/socket";
+      // const wsuri = "ws://10.1.30.202:50000/cycling/realtime/socket";
       this.websock = new WebSocket(wsuri);
       this.websock.onopen = event => {
         console.log("数据已经链接", event);
@@ -206,7 +205,14 @@ export default {
         rtkData.forEach((item, index) => {
           this.headEndCarPoint.forEach((items, indexs) => {
             if (item.deviceId == items.getExtData().deviceId) {
-              this.headEndCarPoint[indexs].setPosition([item.lng, item.lat]);
+              if (item.lng !== 0 && item.lat !== 0) {
+                this.headEndCarPoint[indexs].show()
+                this.headEndCarPoint[indexs].setPosition([item.lng, item.lat]);
+              } else if (item.lng == 0 && item.lat == 0) {
+                this.headEndCarPoint[indexs].hide();
+                items.getExtData().lng = item.lng
+                items.getExtData().lat = item.lat
+              }
             }
           })
         })
@@ -218,7 +224,8 @@ export default {
               if (item.getExtData().curMarkerObj) {
                 this.curMarkerAllData.unshift(item.getExtData().curMarkerObj)
               }
-              this.allpoint[index].show()
+              // this.allpoint[index].show()
+              this.allpoint[index].hide()
               this.allpoint[index].setPosition([objme.lng, objme.lat]); //实时更新自行车的位置
               item.getExtData().lng = objme.lng
               item.getExtData().lat = objme.lat
@@ -311,17 +318,21 @@ export default {
         //初始化heatmap对象
         this.heatmap = new AMap.HeatMap(this.MyMip, {
           radius: 25, //给定半径
-          opacity: [0, 1],
+          opacity: [0.5, 1],
           gradient: {
-            0.05: '#006cff',
-            0.15: '#00f0ff',
-            0.2: '#00cc43',
-            0.25: '#f6ff00',
-            // 0.3: '#fd1704',
-            0.4: 'rgb(117,211,248)',
-            0.7: 'rgb(0, 255, 0)',
-            0.9: '#ffea00',
-            1.0: 'red'
+            // 0.05: '#1500ff',
+            // 0.15: '#00f0ff',
+            // 0.2: '#00cc43',
+            // 0.25: '#f6ff00',
+            // // 0.3: '#fd1704',
+            // 0.4: 'rgb(117,211,248)',
+            // 0.7: 'rgb(0, 255, 0)',
+            // // 0.9: '#ffea00',
+            // 1.0: 'red'
+            0.05: 'rgb(0,0,255)', //蓝
+            0.4: 'rgb(0,255,0)', //绿
+            0.7: 'rgb(255,255,0)', //黄
+            1.0: 'rgb(255,0,0)' //红
           },
         });
       });
@@ -344,13 +355,13 @@ export default {
       let markerq = new AMap.Marker({
         icon: require("../../assets/image/qw.png"),
         position: [120.99097658022741, 31.053094606485807],
-        offset: new AMap.Pixel(-40, -45)
+        offset: new AMap.Pixel(-28, -33)
       });
       markerq.setMap(this.MyMip);
       let markerz = new AMap.Marker({
         icon: require("../../assets/image/dx.png"),
         position: [121.00969149291379, 31.07313499174208],
-        offset: new AMap.Pixel(-40, -40)
+        offset: new AMap.Pixel(-28, -33)
       });
       markerz.setMap(this.MyMip);
       let wdata = this.separateArr(mypath, 2);
@@ -402,7 +413,7 @@ export default {
         map: this.MyMip,
         position: [row.lng, row.lat],
         icon: img,
-        offset: new AMap.Pixel(-42, -56),
+        offset: new AMap.Pixel(-49, -59),
         extData: row
       });
       marker.on('click', e => {
